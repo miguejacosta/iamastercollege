@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="Tutor MJD — Tu tutor de matemáticas con inteligencia artificial">
+<meta name="theme-color" content="#0d1b2a">
+<title>Tutor MJD</title>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$']],
+    displayMath: [['$$','$$']],
+    processEscapes: true
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ── Variables de diseño ── */
+:root {
+  --bg-deep:     #0d1b2a;
+  --bg-card:     #112236;
+  --bg-input:    #0a1520;
+  --accent:      #f0c040;
+  --accent-soft: rgba(240,192,64,0.12);
+  --accent-glow: rgba(240,192,64,0.25);
+  --blue-bright: #4ab3f4;
+  --blue-soft:   rgba(74,179,244,0.12);
+  --text-main:   #e8edf2;
+  --text-muted:  #7a9bb5;
+  --border:      rgba(74,179,244,0.18);
+  --user-bg:     linear-gradient(135deg, #1a3a5c, #1e4870);
+  --bot-bg:      #112236;
+  --radius-lg:   16px;
+  --radius-md:   10px;
+  --radius-sm:   6px;
+  --font-main:   'Space Grotesk', sans-serif;
+  --font-mono:   'JetBrains Mono', monospace;
+  --shadow:      0 4px 24px rgba(0,0,0,0.4);
+  --max-app:     860px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── [#8] Splash de carga ── */
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+#splash.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#splash .splash-logo {
+  width: 72px; height: 72px;
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-splash 1.6s ease-in-out infinite;
+}
+@keyframes pulse-splash {
+  0%,100% { transform: scale(1); box-shadow: 0 0 0 0 var(--accent-glow); }
+  50%     { transform: scale(1.06); box-shadow: 0 0 20px 4px var(--accent-glow); }
+}
+#splash .splash-text {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+#splash .splash-dots span {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin: 0 3px;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+#splash .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
+#splash .splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Partículas de fondo ── */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  opacity: 0;
+  animation: floatUp var(--dur, 12s) var(--delay, 0s) ease-in-out infinite;
+  user-select: none;
+}
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
+  15%  { opacity: 0.18; }
+  80%  { opacity: 0.10; }
+  100% { opacity: 0; transform: translateY(-100vh) rotate(20deg); }
+}
+
+/* ── [#3] Contenedor máximo para desktop ── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100%;
+  max-width: var(--max-app);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 900px) {
+  .app-shell {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    box-shadow: 0 0 60px rgba(0,0,0,0.5);
+  }
+}
+
+/* ── Header ── */
+header {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(180deg, #0a1520 0%, var(--bg-deep) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.logo-wrap {
+  width: 46px;
+  height: 46px;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.logo-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(240,192,64,0.2), transparent 70%);
+}
+.logo-svg { width: 28px; height: 28px; position: relative; z-index: 1; }
+
+.header-text { flex: 1; min-width: 0; }
+.header-text h1 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.01em;
+}
+.header-text p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #4ade80;
+  animation: pulse-dot 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* ── [#4 y #10] Botones del header ── */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.btn-header {
+  background: rgba(74,179,244,0.1);
+  border: 1px solid rgba(74,179,244,0.2);
+  color: var(--text-muted);
+  border-radius: 8px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+}
+.btn-header:hover {
+  background: rgba(74,179,244,0.2);
+  color: var(--text-main);
+}
+.btn-header[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a2d42;
+  color: var(--text-main);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.btn-header:hover[title]::after { opacity: 1; }
+
+/* ── Área de chat ── */
+#chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+  scroll-behavior: smooth;
+}
+
+#chat::-webkit-scrollbar { width: 4px; }
+#chat::-webkit-scrollbar-track { background: transparent; }
+#chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── Burbujas ── */
+.msg {
+  max-width: 88%;
+  padding: 13px 16px;
+  border-radius: var(--radius-lg);
+  font-size: 15px;
+  line-height: 1.55;
+  word-wrap: break-word;
+  animation: slideIn 0.25s ease-out both;
+  position: relative;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg img { max-width: 100%; border-radius: var(--radius-md); margin-top: 8px; }
+.msg p  { margin: 0 0 8px; }
+.msg p:last-child { margin-bottom: 0; }
+.msg ul, .msg ol { padding-left: 20px; margin: 6px 0; }
+.msg li { margin-bottom: 4px; }
+.msg code {
+  background: rgba(74,179,244,0.1);
+  color: var(--blue-bright);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ── [#13] Bloques de código con resaltado ── */
+.msg pre {
+  background: #0a1520;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin: 8px 0;
+  overflow-x: auto;
+  position: relative;
+}
+.msg pre code {
+  background: none;
+  color: #a8d8f0;
+  font-size: 13px;
+  padding: 0;
+  line-height: 1.6;
+  display: block;
+  white-space: pre;
+}
+.msg pre::-webkit-scrollbar { height: 4px; }
+.msg pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.user {
+  align-self: flex-end;
+  background: var(--user-bg);
+  border: 1px solid rgba(74,179,244,0.2);
+  border-bottom-right-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+.bot {
+  align-self: flex-start;
+  background: var(--bot-bg);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+/* Label del emisor */
+.msg-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bot .msg-label  { color: var(--accent); }
+.user .msg-label { color: var(--blue-bright); }
+
+/* ── [#5] Timestamps ── */
+.msg-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: right;
+  opacity: 0.7;
+}
+
+/* ── [#6] Botón copiar en respuestas del bot ── */
+.msg-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 8px;
+}
+.btn-copy {
+  background: rgba(74,179,244,0.08);
+  border: 1px solid rgba(74,179,244,0.15);
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-family: var(--font-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.btn-copy:hover {
+  background: rgba(74,179,244,0.18);
+  color: var(--text-main);
+}
+.btn-copy.copied {
+  color: #4ade80;
+  border-color: rgba(74,222,128,0.3);
+  background: rgba(74,222,128,0.1);
+}
+
+/* ── [#7] Botón de reintentar ── */
+.btn-retry {
+  background: rgba(240,192,64,0.15);
+  border: 1px solid rgba(240,192,64,0.3);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-family: var(--font-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.btn-retry:hover { background: rgba(240,192,64,0.25); }
+
+/* Indicador de escritura */
+.typing-indicator {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 6px 0 2px;
+}
+.typing-indicator span {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%,80%,100% { transform: translateY(0); opacity: 0.5; }
+  40%          { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ── Preview de archivo ── */
+#preview_container {
+  display: none;
+  padding: 10px 16px;
+  background: var(--accent-soft);
+  border-top: 1px solid rgba(240,192,64,0.25);
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+#file_name {
+  font-size: 13px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.btn-remove {
+  background: rgba(239,68,68,0.2);
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 50%;
+  width: 26px; height: 26px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.btn-remove:hover { background: rgba(239,68,68,0.35); }
+
+/* ── Área de input ── */
+#input-area {
+  background: var(--bg-input);
+  border-top: 1px solid var(--border);
+  padding: 12px 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+#mensaje {
+  flex: 1;
+  min-width: 0;   /* ← permite que el input se encoja correctamente en móviles */
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 11px 18px;
+  font-size: 15px;
+  font-family: var(--font-main);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#mensaje::placeholder { color: var(--text-muted); }
+#mensaje:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.btn-action {
+  width: 44px; height: 44px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: transform 0.15s, background 0.2s;
+}
+.btn-action:active { transform: scale(0.92); }
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Ajustes finos para móvil — con 4 botones + input + enviar, el ancho justo no alcanza */
+@media (max-width: 560px) {
+  #input-area {
+    padding: 10px 10px;
+    gap: 6px;
+  }
+  .btn-action {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  #mensaje {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 380px) {
+  #input-area {
+    padding: 9px 8px;
+    gap: 5px;
+  }
+  .btn-action {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+  #mensaje {
+    padding: 9px 12px;
+    font-size: 14px;
+  }
+}
+
+.btn-clip {
+  background: rgba(74,179,244,0.15);
+  border: 1px solid rgba(74,179,244,0.3);
+  color: var(--blue-bright);
+}
+.btn-clip:hover { background: rgba(74,179,244,0.25); }
+
+/* ── [#12] Botón cámara directa ── */
+.btn-camera {
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.25);
+  color: #4ade80;
+}
+.btn-camera:hover { background: rgba(74,222,128,0.22); }
+
+.btn-send {
+  background: var(--accent);
+  color: var(--bg-deep);
+}
+.btn-send:hover:not(:disabled) { background: #f5d060; }
+
+/* ── Responsive ── */
+@media (min-width: 680px) {
+  header, #input-area, #preview_container { padding-left: 28px; padding-right: 28px; }
+  #chat { padding: 24px 28px; }
+  .msg { max-width: 75%; }
+}
+
+/* ── Scrollbar Firefox ── */
+#chat { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+/* ── Imagen inline en el chat ── */
+.msg-graph {
+  margin-top: 10px;
+  cursor: zoom-in;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.msg-graph img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 10px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.5);
+  display: block;
+  transition: opacity 0.2s;
+}
+.msg-graph img:hover { opacity: 0.88; }
+.msg-graph-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── [2.1] Desarrollo vertical: cada $$...$$ en su propia línea ── */
+/* Aplicado a TODOS los bloques display-math renderizados por MathJax */
+.msg-body mjx-container[display="true"] {
+  display: block !important;
+  margin: 0.55em auto 0.55em !important;
+  text-align: center;
+  padding: 8px 10px;
+  border-left: 3px solid rgba(240,192,64,0.22);
+  border-radius: 0 6px 6px 0;
+  background: rgba(240,192,64,0.035);
+  overflow-x: auto;
+  overflow-y: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: stepReveal 0.35s ease forwards;
+}
+
+/* [2.3] Animación de aparición escalonada */
+@keyframes stepReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* [2.2] Resaltado del paso final (respuesta envuelta en \boxed) */
+.math-boxed-wrapper mjx-container[display="true"] {
+  background: linear-gradient(135deg, rgba(240,192,64,0.20), rgba(240,192,64,0.08));
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 0 14px rgba(240,192,64,0.18);
+  padding: 10px 14px;
+}
+.math-boxed-wrapper {
+  display: block;
+  margin: 0.2em 0;
+}
+
+/* Respeto a prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .msg-body mjx-container[display="true"] {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Durante el streaming ocultamos el footer (se agrega al terminar) ── */
+.msg.bot.streaming .msg-footer { display: none; }
+
+/* ── [4.2] Teclado matemático ── */
+#math-keyboard {
+  display: none;
+  padding: 8px 14px;
+  background: var(--bg-input);
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#math-keyboard.open { display: block; }
+#math-keyboard::-webkit-scrollbar { height: 4px; }
+#math-keyboard::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.math-kbd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 34px;
+  padding: 0 10px;
+  margin-right: 5px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  user-select: none;
+  vertical-align: middle;
+}
+.math-kbd-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.math-kbd-btn:active { transform: scale(0.92); }
+.math-kbd-sep {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  vertical-align: middle;
+  margin: 0 6px;
+}
+
+.btn-math-kbd {
+  background: rgba(240,192,64,0.12);
+  border: 1px solid rgba(240,192,64,0.25);
+  color: var(--accent);
+}
+.btn-math-kbd:hover { background: rgba(240,192,64,0.22); }
+.btn-math-kbd.active {
+  background: var(--accent);
+  color: var(--bg-deep);
+  border-color: var(--accent);
+}
+
+/* ── [#11] Lightbox accesible ── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0,0,0,0.92);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+#lightbox.open { display: flex; }
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+#lightbox img {
+  max-width: 96vw;
+  max-height: 82vh;
+  border-radius: 12px;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.7);
+  object-fit: contain;
+}
+#lightbox-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+#lightbox-back {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 20px;
+  padding: 7px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-main);
+  transition: background 0.2s;
+}
+#lightbox-back:hover { background: rgba(255,255,255,0.2); }
+#lightbox-title {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ── [#8] Splash de carga ── -->
+<div id="splash" aria-label="Cargando Tutor MJD">
+  <div class="splash-logo">
+    <svg width="38" height="38" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="6" width="20" height="14" rx="4" fill="#f0c040" opacity="0.9"/>
+      <circle cx="10" cy="12" r="2.5" fill="#0d1b2a"/>
+      <circle cx="18" cy="12" r="2.5" fill="#0d1b2a"/>
+      <circle cx="11" cy="11" r="0.9" fill="#4ab3f4"/>
+      <circle cx="19" cy="11" r="0.9" fill="#4ab3f4"/>
+      <path d="M10 16.5 Q14 19 18 16.5" stroke="#0d1b2a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+  <div class="splash-text">Tutor MJD</div>
+  <div class="splash-dots"><span></span><span></span><span></span></div>
+</div>
+
+<div class="particles" aria-hidden="true" id="particles"></div>
+
+<!-- ── [#3] App shell con max-width ── -->
+<div class="app-shell">
+
+<header>
+  <div class="logo-wrap" aria-hidden="true">
+    <svg class="logo-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="6" width="20" height="14" rx="4" fill="#f0c040" opacity="0.9"/>
+      <circle cx="10" cy="12" r="2.5" fill="#0d1b2a"/>
+      <circle cx="18" cy="12" r="2.5" fill="#0d1b2a"/>
+      <circle cx="11" cy="11" r="0.9" fill="#4ab3f4"/>
+      <circle cx="19" cy="11" r="0.9" fill="#4ab3f4"/>
+      <line x1="14" y1="6" x2="14" y2="2" stroke="#f0c040" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="14" cy="2" r="1.5" fill="#4ab3f4"/>
+      <path d="M10 16.5 Q14 19 18 16.5" stroke="#0d1b2a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <rect x="9" y="20" width="10" height="5" rx="2" fill="#f0c040" opacity="0.7"/>
+      <rect x="9"  y="25" width="3.5" height="2.5" rx="1" fill="#f0c040" opacity="0.5"/>
+      <rect x="15.5" y="25" width="3.5" height="2.5" rx="1" fill="#f0c040" opacity="0.5"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>Tutor MJD</h1>
+    <p>Tu tutor de matemáticas con IA</p>
+  </div>
+  <div class="status-dot" title="En línea" aria-label="Servicio activo"></div>
+
+  <!-- [#4 y #10] Botones header -->
+  <div class="header-actions">
+    <button class="btn-header" onclick="exportarConversacion()" title="Exportar chat" aria-label="Exportar conversación">📥</button>
+    <button class="btn-header" onclick="nuevaConversacion()" title="Nuevo chat" aria-label="Nueva conversación" style="color: var(--accent);">🔄</button>
+  </div>
+
+  <img
+    src="escudo.jpg"
+    alt="Escudo institucional"
+    style="
+      height: 42px;
+      width: auto;
+      border-radius: 8px;
+      object-fit: contain;
+      flex-shrink: 0;
+      margin-left: 4px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+    "
+  >
+</header>
+
+<main id="chat" role="log" aria-live="polite" aria-label="Conversación con el tutor">
+  <div class="msg bot">
+    <div class="msg-label">🤖 Tutor MJD</div>
+    ¡Hola! Soy Tutor MJD. Puedes escribirme tu duda matemática o tocar el clip (📎) para adjuntar una imagen, o el botón de cámara (📷) para tomarle una foto directamente a tu guía de clase o cuaderno. ¡Empecemos!
+    <div class="msg-time" data-ts="init"></div>
+  </div>
+</main>
+
+<!-- ── [#11] Lightbox accesible ── -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada de imagen" onclick="cerrarLightbox(event)">
+  <div id="lightbox-bar">
+    <button id="lightbox-back" onclick="cerrarLightbox()">← Regresar</button>
+    <span id="lightbox-title">Triángulo del ejercicio</span>
+  </div>
+  <img id="lightbox-img" src="" alt="Triángulo rectángulo ampliado" />
+</div>
+
+<div id="preview_container" role="status" aria-live="polite">
+  <span id="file_name">Archivo seleccionado</span>
+  <button class="btn-remove" onclick="limpiarArchivo()" aria-label="Quitar archivo adjunto">✖</button>
+</div>
+
+<!-- ── [4.2] Teclado matemático ── -->
+<div id="math-keyboard" role="toolbar" aria-label="Teclado matemático">
+  <button class="math-kbd-btn" onclick="insertarSimbolo('√')" title="Raíz cuadrada">√</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('²')" title="Elevado al cuadrado">x²</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('³')" title="Elevado al cubo">x³</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('^')" title="Exponente (potencia)">^</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('π')" title="Pi">π</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('θ')" title="Theta">θ</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('°')" title="Grados">°</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('×')" title="Multiplicación">×</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('÷')" title="División">÷</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('±')" title="Más-menos">±</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('≤')" title="Menor o igual">≤</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('≥')" title="Mayor o igual">≥</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('≠')" title="Distinto">≠</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('(')" title="Abre paréntesis">(</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo(')')" title="Cierra paréntesis">)</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('sen(')" title="Seno">sen(</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('cos(')" title="Coseno">cos(</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('tan(')" title="Tangente">tan(</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('log(')" title="Logaritmo">log(</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('ln(')" title="Logaritmo natural">ln(</button>
+  <span class="math-kbd-sep"></span>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('∞')" title="Infinito">∞</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('Δ')" title="Delta">Δ</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('Σ')" title="Sumatoria">Σ</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('∫')" title="Integral">∫</button>
+</div>
+
+<div id="input-area">
+  <!-- Input de archivo general -->
+  <input
+    type="file"
+    id="file_input"
+    accept="image/*,application/pdf"
+    style="display:none"
+    aria-label="Adjuntar imagen o PDF"
+    onchange="manejarArchivo()"
+  >
+  <!-- [#12] Input de cámara directa -->
+  <input
+    type="file"
+    id="camera_input"
+    accept="image/*"
+    capture="environment"
+    style="display:none"
+    aria-label="Tomar foto con la cámara"
+    onchange="manejarArchivoCamara()"
+  >
+  <button
+    class="btn-action btn-clip"
+    onclick="document.getElementById('file_input').click()"
+    aria-label="Adjuntar archivo"
+    title="Adjuntar imagen o PDF"
+  >📎</button>
+  <button
+    class="btn-action btn-camera"
+    onclick="document.getElementById('camera_input').click()"
+    aria-label="Tomar foto con la cámara"
+    title="Cámara directa"
+  >📷</button>
+  <!-- [4.2] Botón teclado matemático -->
+  <button
+    id="btn_math_kbd"
+    class="btn-action btn-math-kbd"
+    onclick="toggleTecladoMatematico()"
+    aria-label="Teclado matemático"
+    title="Símbolos matemáticos"
+  >∑</button>
+  <input
+    type="text"
+    id="mensaje"
+    placeholder="Escribe tu duda aquí..."
+    autocomplete="off"
+    aria-label="Escribe tu pregunta de matemáticas"
+  >
+  <button
+    id="btn_enviar"
+    class="btn-action btn-send"
+    onclick="enviarMensaje()"
+    aria-label="Enviar mensaje"
+    title="Enviar"
+  >➤</button>
+</div>
+
+</div><!-- /.app-shell -->
+
+<script>
+// ── Configuración ────────────────────────────────────────────────────
+const SERVER_URL = "https://tutor-mjd-api-411083505938.us-central1.run.app/chat";
+const STREAM_URL = SERVER_URL.replace('/chat', '/chat-stream');   // [1.1] SSE
+const BASE_URL   = SERVER_URL.replace('/chat', '');
+const MAX_HISTORIAL = 20;                   // [3.9] Unificado con backend
+const FETCH_TIMEOUT_MS = 90000;             // [3.7] 90s — Cloud Run permite hasta 300
+
+// 🏫 ID de la institución — CAMBIAR EN CADA COPIA del proyecto.
+// Se usa para que el historial guardado en cada institución no se mezcle
+// con el de otras instituciones que compartan el mismo dominio de GitHub Pages.
+// Ejemplos válidos: 'mjd', 'alfonso_lopez', 'sanjose'. Solo letras, números y _.
+const INSTITUCION_ID = 'mjd';
+const STORAGE_KEY_HISTORIAL = `tutor_${INSTITUCION_ID}_historial_v1`;
+
+// ── Estado ───────────────────────────────────────────────────────────
+let historialSesion     = [];
+let archivoActualBase64 = null;
+let mimeTypeActual      = null;
+let enviando            = false;   // [#14] Flag anti-doble envío
+let ultimoPayload       = null;    // [#7] Para reintentar
+
+// ── [#8] Splash — ocultar cuando todo cargue ────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hide');
+  }, 600);
+  // [#5] Timestamp del mensaje de bienvenida
+  const tsEl = document.querySelector('.msg-time[data-ts="init"]');
+  if (tsEl) tsEl.textContent = obtenerHora();
+
+  // [4.4] Restaurar historial guardado si existe
+  if (cargarHistorial()) {
+    restaurarMensajesEnDOM();
+  }
+});
+
+// ── [#5] Helper de hora ─────────────────────────────────────────────
+function obtenerHora() {
+  return new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+// ── [#11] Lightbox accesible ────────────────────────────────────────
+let focusAnteriorLightbox = null;
+
+function abrirLightbox(imgSrc) {
+  focusAnteriorLightbox = document.activeElement;
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightbox-img').src = imgSrc;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('lightbox-back').focus();
+  document.addEventListener('keydown', lightboxKeyHandler);
+}
+
+function cerrarLightbox(e) {
+  if (e && e.target && e.target !== document.getElementById('lightbox') &&
+      !document.getElementById('lightbox-back').contains(e.target)) return;
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', lightboxKeyHandler);
+  if (focusAnteriorLightbox) focusAnteriorLightbox.focus();
+}
+
+function lightboxKeyHandler(e) {
+  if (e.key === 'Escape') { cerrarLightbox(); return; }
+  // Focus trap: solo el botón Regresar es focusable dentro del lightbox
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    document.getElementById('lightbox-back').focus();
+  }
+}
+
+// ── Gráfica en chat ─────────────────────────────────────────────────
+async function mostrarGraficaEnChat(params) {
+  const qs = new URLSearchParams();
+  if (params.angulo)     qs.set("angulo",     params.angulo);
+  if (params.opuesto)    qs.set("opuesto",    params.opuesto);
+  if (params.adyacente)  qs.set("adyacente",  params.adyacente);
+  if (params.hipotenusa) qs.set("hipotenusa", params.hipotenusa);
+
+  const tipo  = params.tipo === 'resultado' ? 'resultado' : 'datos';
+  const label = tipo === 'resultado'
+    ? '📐 Triángulo resuelto — toca para explorar'
+    : '📐 Datos del ejercicio — toca para explorar';
+
+  const chat   = document.getElementById('chat');
+  const ultimo = chat.querySelector('.bot:last-child');
+  if (!ultimo) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg-graph';
+
+  const img = document.createElement('img');
+  img.alt = 'Triángulo rectángulo';
+  img.src = '';
+  img.style.opacity = '0.4';
+
+  const hint = document.createElement('div');
+  hint.className = 'msg-graph-hint';
+  hint.innerHTML = `🔍 ${label}`;
+
+  wrapper.appendChild(img);
+  wrapper.appendChild(hint);
+  ultimo.appendChild(wrapper);
+  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+
+  try {
+    const res  = await fetch(`${BASE_URL}/graph?${qs.toString()}`);
+    const data = await res.json();
+    if (data.imagen) {
+      const src = "data:image/png;base64," + data.imagen;
+      img.src = src;
+      img.style.opacity = '1';
+      img.style.transition = 'opacity 0.4s';
+      wrapper.onclick = () => abrirLightbox(src);
+    }
+  } catch(e) {
+    console.error("Error cargando gráfica:", e);
+    wrapper.remove();
+  }
+}
+
+// ── [NUEVO] Mostrar gráfica de función en el chat ───────────────────
+async function mostrarFuncionEnChat(params) {
+  const qs = new URLSearchParams();
+  qs.set("expr",   params.expr   || "x**2");
+  qs.set("xmin",   params.xmin   || "-10");
+  qs.set("xmax",   params.xmax   || "10");
+  qs.set("titulo", params.titulo || "Gráfica de función");
+
+  const chat   = document.getElementById('chat');
+  const ultimo = chat.querySelector('.bot:last-child');
+  if (!ultimo) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg-graph';
+
+  const img = document.createElement('img');
+  img.alt = params.titulo || 'Gráfica de función';
+  img.src = '';
+  img.style.opacity = '0.4';
+
+  const hint = document.createElement('div');
+  hint.className = 'msg-graph-hint';
+  hint.innerHTML = '📈 Gráfica generada — toca para ampliar';
+
+  wrapper.appendChild(img);
+  wrapper.appendChild(hint);
+  ultimo.appendChild(wrapper);
+  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+
+  try {
+    const res  = await fetch(`${BASE_URL}/graph-func?${qs.toString()}`);
+    const data = await res.json();
+    if (data.imagen) {
+      const src = "data:image/png;base64," + data.imagen;
+      img.src = src;
+      img.style.opacity = '1';
+      img.style.transition = 'opacity 0.4s';
+      wrapper.onclick = () => abrirLightbox(src);
+    }
+  } catch(e) {
+    console.error("Error cargando gráfica de función:", e);
+    wrapper.remove();
+  }
+}
+
+// ── Partículas matemáticas ───────────────────────────────────────────
+(function crearParticulas() {
+  const simbolos = ['∑', 'π', '∫', '√', 'Δ', '∞', 'θ', 'α', 'β', 'λ',
+                    'x²', 'f(x)', 'dy/dx', '=', '+', '÷', '×', 'log', 'sin', 'cos'];
+  const container = document.getElementById('particles');
+  simbolos.forEach((sym, i) => {
+    const el = document.createElement('span');
+    el.className = 'particle';
+    el.textContent = sym;
+    el.style.cssText = `
+      left: ${Math.random() * 95}%;
+      bottom: -30px;
+      --dur: ${10 + Math.random() * 14}s;
+      --delay: ${Math.random() * 12}s;
+      font-size: ${11 + Math.random() * 6}px;
+    `;
+    container.appendChild(el);
+  });
+})();
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function agregarMensaje(htmlContent, clase, opciones = {}) {
+  const chat = document.getElementById('chat');
+  const div  = document.createElement('div');
+  div.className = `msg ${clase}`;
+  if (opciones.esStreaming) div.classList.add('streaming');
+
+  const label = clase === 'bot'
+    ? '<div class="msg-label">🤖 Tutor MJD</div>'
+    : '<div class="msg-label">👤 Tú</div>';
+
+  let footerHTML = '';
+  const hora = obtenerHora();
+  // En modo streaming no ponemos footer todavía — se agrega al terminar
+  if (!opciones.esStreaming) {
+    if (clase === 'bot' && !opciones.esError) {
+      footerHTML = `
+        <div class="msg-footer">
+          <span class="msg-time">${hora}</span>
+          <button class="btn-copy" onclick="copiarMensaje(this)" aria-label="Copiar respuesta">📋 Copiar</button>
+        </div>`;
+    } else {
+      footerHTML = `<div class="msg-time">${hora}</div>`;
+    }
+  }
+
+  div.innerHTML = label + '<div class="msg-body">' + htmlContent + '</div>' + footerHTML;
+  chat.appendChild(div);
+  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  return div;
+}
+
+// [#6] Copiar texto del mensaje
+function copiarMensaje(btn) {
+  const msgBody = btn.closest('.msg').querySelector('.msg-body');
+  const texto = msgBody.innerText || msgBody.textContent;
+  navigator.clipboard.writeText(texto).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '✅ Copiado';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '📋 Copiar';
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('copied');
+    btn.innerHTML = '✅ Copiado';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '📋 Copiar';
+    }, 2000);
+  });
+}
+
+function agregarIndicadorEscritura() {
+  const chat = document.getElementById('chat');
+  const div  = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typing-msg';
+  div.innerHTML = `
+    <div class="msg-label">🤖 Tutor MJD</div>
+    <div class="typing-indicator">
+      <span></span><span></span><span></span>
+    </div>`;
+  chat.appendChild(div);
+  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  return div;
+}
+
+// Protege el LaTeX durante el parseo de Markdown
+// [2.2] Además envuelve los bloques con \boxed en un span para poder resaltarlos con CSS.
+function procesarTextoSeguro(texto) {
+  const bloques = [];
+  const tieneBoxed = [];
+  const protegido = texto.replace(/(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$)/g, match => {
+    bloques.push(match);
+    tieneBoxed.push(/\\boxed\s*\{/.test(match));
+    return `MATHBLOCK_${bloques.length - 1}_END`;
+  });
+  let html = marked.parse(protegido);
+  bloques.forEach((bloque, i) => {
+    const reemplazo = tieneBoxed[i]
+      ? `<span class="math-boxed-wrapper">${bloque}</span>`
+      : bloque;
+    html = html.replace(`MATHBLOCK_${i}_END`, reemplazo);
+  });
+  return html;
+}
+
+// [2.3] Aplica delay de animación escalonado a cada paso $$...$$ ya renderizado
+function aplicarAnimacionPasos(msgDiv) {
+  const pasos = msgDiv.querySelectorAll('mjx-container[display="true"]');
+  pasos.forEach((el, i) => {
+    el.style.animationDelay = `${i * 120}ms`;
+  });
+}
+
+// ── Manejo de archivo ─────────────────────────────────────────────────
+function manejarArchivo() {
+  procesarInputArchivo(document.getElementById('file_input'));
+}
+
+// [#12] Cámara directa
+function manejarArchivoCamara() {
+  procesarInputArchivo(document.getElementById('camera_input'));
+}
+
+function procesarInputArchivo(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+
+  const btnEnviar = document.getElementById('btn_enviar');
+  btnEnviar.disabled = true;
+
+  document.getElementById('file_name').textContent = '⏳ Procesando...';
+  document.getElementById('preview_container').style.display = 'flex';
+
+  mimeTypeActual = file.type || 'application/octet-stream';
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    archivoActualBase64 = e.target.result.split(',')[1];
+    document.getElementById('file_name').textContent = '✅ ' + file.name;
+    btnEnviar.disabled = false;
+  };
+
+  reader.onerror = function() {
+    document.getElementById('file_name').textContent = '⚠️ Error al leer el archivo';
+    btnEnviar.disabled = false;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function limpiarArchivo() {
+  document.getElementById('file_input').value = '';
+  document.getElementById('camera_input').value = '';
+  archivoActualBase64 = null;
+  mimeTypeActual      = null;
+  document.getElementById('file_name').textContent = '';
+  document.getElementById('preview_container').style.display = 'none';
+}
+
+// ── [#4] Nueva conversación ─────────────────────────────────────────
+function nuevaConversacion() {
+  if (historialSesion.length === 0) return;
+  if (!confirm('¿Iniciar una nueva conversación? Se perderá el historial actual.')) return;
+
+  historialSesion = [];
+  ultimoPayload   = null;
+  enviando        = false;
+  borrarHistorialGuardado();   // [4.4]
+
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+
+  // Restaurar mensaje de bienvenida
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = `
+    <div class="msg-label">🤖 Tutor MJD</div>
+    <div class="msg-body">¡Hola! Nueva sesión iniciada. Puedes escribirme tu duda matemática o adjuntar una imagen. ¡Empecemos!</div>
+    <div class="msg-time">${obtenerHora()}</div>
+  `;
+  chat.appendChild(div);
+
+  document.getElementById('mensaje').focus();
+}
+
+// ── [#10] Exportar conversación ─────────────────────────────────────
+function exportarConversacion() {
+  if (historialSesion.length === 0) {
+    alert('No hay conversación para exportar.');
+    return;
+  }
+
+  let texto = '═══════════════════════════════════════\n';
+  texto    += '   TUTOR MJD — Conversación exportada\n';
+  texto    += '   ' + new Date().toLocaleString('es-CO') + '\n';
+  texto    += '═══════════════════════════════════════\n\n';
+
+  historialSesion.forEach(msg => {
+    const emisor = msg.role === 'user' ? '👤 TÚ' : '🤖 TUTOR MJD';
+    texto += `── ${emisor} ──\n`;
+    texto += msg.content + '\n\n';
+  });
+
+  texto += '═══════════════════════════════════════\n';
+  texto += 'Exportado desde Tutor MJD — Universidad Popular del Cesar\n';
+
+  const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `TutorMJD_${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ── [4.4] Persistencia en localStorage ───────────────────────────────
+function guardarHistorial() {
+  try {
+    // Solo guardamos texto — los archivos adjuntos no se persisten (ocupan mucho)
+    const recortado = historialSesion.slice(-MAX_HISTORIAL);
+    localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify(recortado));
+  } catch (e) {
+    console.warn('No se pudo guardar el historial:', e);
+  }
+}
+
+function cargarHistorial() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY_HISTORIAL);
+    if (!data) return false;
+    const parsed = JSON.parse(data);
+    if (!Array.isArray(parsed) || parsed.length === 0) return false;
+    historialSesion = parsed;
+    return true;
+  } catch (e) {
+    console.warn('No se pudo cargar el historial:', e);
+    return false;
+  }
+}
+
+function borrarHistorialGuardado() {
+  try { localStorage.removeItem(STORAGE_KEY_HISTORIAL); } catch(e) {}
+}
+
+function restaurarMensajesEnDOM() {
+  const chat = document.getElementById('chat');
+  // Quitamos el mensaje de bienvenida por defecto
+  chat.innerHTML = '';
+
+  // Pequeña nota al inicio de una sesión restaurada
+  const aviso = document.createElement('div');
+  aviso.className = 'msg bot';
+  aviso.innerHTML = `
+    <div class="msg-label">🤖 Tutor MJD</div>
+    <div class="msg-body">Retomamos donde quedamos. Continuemos con tu duda anterior o escríbeme una nueva.</div>
+    <div class="msg-time">${obtenerHora()}</div>
+  `;
+  chat.appendChild(aviso);
+
+  const divsParaMathJax = [];
+  historialSesion.forEach(msg => {
+    if (msg.role === 'user') {
+      const htmlTexto = marked.parse(msg.content || '');
+      agregarMensaje(htmlTexto, 'user', { skipHistorial: true });
+    } else {
+      const htmlParseado = procesarTextoSeguro(msg.content || '');
+      const d = agregarMensaje(htmlParseado, 'bot', { skipHistorial: true });
+      divsParaMathJax.push(d);
+    }
+  });
+
+  if (window.MathJax && divsParaMathJax.length) {
+    MathJax.typesetPromise(divsParaMathJax).then(() => {
+      divsParaMathJax.forEach(aplicarAnimacionPasos);
+    });
+  }
+}
+
+// ── [4.2] Teclado matemático ─────────────────────────────────────────
+function toggleTecladoMatematico() {
+  const kbd = document.getElementById('math-keyboard');
+  const btn = document.getElementById('btn_math_kbd');
+  const abierto = kbd.classList.toggle('open');
+  btn.classList.toggle('active', abierto);
+  if (abierto) document.getElementById('mensaje').focus();
+}
+
+function insertarSimbolo(simbolo) {
+  const input = document.getElementById('mensaje');
+  const inicio = input.selectionStart ?? input.value.length;
+  const fin    = input.selectionEnd   ?? input.value.length;
+  const antes  = input.value.substring(0, inicio);
+  const despues = input.value.substring(fin);
+  input.value = antes + simbolo + despues;
+  // Reposicionar cursor justo después del símbolo insertado
+  const nuevaPos = inicio + simbolo.length;
+  input.focus();
+  input.setSelectionRange(nuevaPos, nuevaPos);
+}
+
+// ── Envío de mensaje (STREAMING) ─────────────────────────────────────
+async function enviarMensaje() {
+  // [#14] Prevención de envío doble
+  if (enviando) return;
+
+  const input = document.getElementById('mensaje');
+  const txt   = input.value.trim();
+
+  if (!txt && !archivoActualBase64) return;
+
+  enviando = true;
+
+  // Construir vista previa del mensaje de usuario
+  let vistaPrevia = txt ? marked.parse(txt) : '';
+  if (archivoActualBase64) {
+    const nombreArchivo = document.getElementById('file_name').textContent.replace('✅ ', '');
+    vistaPrevia += mimeTypeActual.startsWith('image/')
+      ? `<img src="data:${mimeTypeActual};base64,${archivoActualBase64}" alt="Imagen adjunta">`
+      : `<p><i>📄 ${nombreArchivo}</i></p>`;
+  }
+
+  agregarMensaje(vistaPrevia, 'user');
+  input.value = '';
+
+  const historialRecortado = historialSesion.slice(-MAX_HISTORIAL);
+
+  const payload = {
+    msg:       txt,
+    historial: historialRecortado,
+    file_b64:  archivoActualBase64,
+    mime_type: mimeTypeActual
+  };
+
+  ultimoPayload = { ...payload };
+
+  historialSesion.push({
+    role:    'user',
+    content: txt || '[El estudiante envió un archivo para análisis]'
+  });
+  guardarHistorial();
+
+  limpiarArchivo();
+  document.getElementById('btn_enviar').disabled = true;
+
+  await ejecutarStreaming(payload);
+}
+
+// [#7] Reintento — también usa streaming
+async function reintentarEnvio() {
+  if (!ultimoPayload || enviando) return;
+
+  // Remover el mensaje de error anterior
+  const chat = document.getElementById('chat');
+  const msgs = chat.querySelectorAll('.msg.bot');
+  const lastBot = msgs[msgs.length - 1];
+  if (lastBot && lastBot.querySelector('.btn-retry')) lastBot.remove();
+
+  enviando = true;
+  document.getElementById('btn_enviar').disabled = true;
+  await ejecutarStreaming(ultimoPayload);
+}
+
+// ── [1.1] Motor de streaming SSE (compartido por enviar y reintentar) ──
+async function ejecutarStreaming(payload) {
+  // Mostramos las burbujitas de "escribiendo..." ANTES del primer chunk.
+  // Cuando llegue el primer texto, las removemos y creamos la burbuja real.
+  let indicador = agregarIndicadorEscritura();
+  let msgDiv    = null;
+  let msgBody   = null;
+
+  let textoAcumulado = '';   // texto crudo recibido por chunks
+  let textoFinal     = null; // texto post-procesado que envía el backend al cerrar
+  let ultimaRenderizacion = 0;
+
+  // [3.7] Timeout con AbortController
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  // Crea la burbuja del bot cuando llega el primer chunk (solo se llama una vez)
+  const asegurarBurbuja = () => {
+    if (msgDiv) return;
+    if (indicador) { indicador.remove(); indicador = null; }
+    msgDiv  = agregarMensaje('', 'bot', { esStreaming: true });
+    msgBody = msgDiv.querySelector('.msg-body');
+  };
+
+  const renderParcial = () => {
+    if (!msgBody) return;
+    // Durante el streaming mostramos texto con Markdown aplicado (rápido),
+    // pero NO llamamos a MathJax hasta el final para no saturar el browser.
+    msgBody.innerHTML = marked.parse(textoAcumulado);
+    const chat = document.getElementById('chat');
+    chat.scrollTop = chat.scrollHeight;
+  };
+
+  // Helper: remueve el indicador si todavía está y muestra un error
+  const mostrarError = (mensaje) => {
+    if (indicador) { indicador.remove(); indicador = null; }
+    if (msgDiv) {
+      msgDiv.classList.remove('streaming');
+      msgBody.innerHTML = mensaje +
+        '<br><button class="btn-retry" onclick="reintentarEnvio()">🔄 Reintentar</button>';
+    } else {
+      agregarMensaje(
+        mensaje + '<br><button class="btn-retry" onclick="reintentarEnvio()">🔄 Reintentar</button>',
+        'bot',
+        { esError: true }
+      );
+    }
+  };
+
+  try {
+    const res = await fetch(STREAM_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+      signal:  controller.signal
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const reader  = res.body.getReader();
+    const decoder = new TextDecoder();
+    let sseBuffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      sseBuffer += decoder.decode(value, { stream: true });
+
+      // SSE: eventos separados por doble salto de línea
+      const eventos = sseBuffer.split('\n\n');
+      sseBuffer = eventos.pop();   // el último puede estar incompleto
+
+      for (const evtCrudo of eventos) {
+        const linea = evtCrudo.split('\n').find(l => l.startsWith('data: '));
+        if (!linea) continue;
+        let ev;
+        try { ev = JSON.parse(linea.slice(6)); }
+        catch (e) { console.warn('SSE JSON parse error:', linea); continue; }
+
+        if (ev.type === 'chunk') {
+          // Primer chunk → remover burbujitas y crear la burbuja real
+          asegurarBurbuja();
+          textoAcumulado += ev.text;
+          // Throttle: re-render cada ~70ms para no saturar
+          const ahora = performance.now();
+          if (ahora - ultimaRenderizacion > 70) {
+            renderParcial();
+            ultimaRenderizacion = ahora;
+          }
+
+        } else if (ev.type === 'final') {
+          textoFinal = ev.text;
+
+        } else if (ev.type === 'grafica') {
+          asegurarBurbuja();   // la gráfica se ancla a la última burbuja bot
+          mostrarGraficaEnChat(ev.params);
+
+        } else if (ev.type === 'funcion') {
+          asegurarBurbuja();
+          mostrarFuncionEnChat(ev.params);
+
+        } else if (ev.type === 'error') {
+          textoFinal = null;
+          clearTimeout(timeoutId);
+          mostrarError(ev.msg || '⚠️ Error en el servidor.');
+          enviando = false;
+          document.getElementById('btn_enviar').disabled = false;
+          return;
+
+        } else if (ev.type === 'done') {
+          // Fin del stream — pasamos a render final
+        }
+      }
+    }
+
+    clearTimeout(timeoutId);
+
+    // Si nunca llegó ningún chunk ni texto final → error silencioso
+    if (!msgDiv && !textoFinal) {
+      mostrarError('⚠️ No se recibió respuesta.');
+      return;
+    }
+
+    // --- Render final: texto post-procesado + MathJax + animación ---
+    asegurarBurbuja();   // por si solo llegó "final" sin chunks previos
+    const textoParaRender = textoFinal || textoAcumulado;
+
+    // Guardar en historial y persistencia
+    historialSesion.push({ role: 'model', content: textoParaRender });
+    guardarHistorial();
+
+    // Render definitivo
+    msgBody.innerHTML = procesarTextoSeguro(textoParaRender);
+    msgDiv.classList.remove('streaming');
+
+    if (window.MathJax) {
+      try {
+        await MathJax.typesetPromise([msgDiv]);
+      } catch (e) {
+        console.warn('MathJax error:', e);
+      }
+    }
+    // [2.3] Aplicar animación escalonada a cada paso
+    aplicarAnimacionPasos(msgDiv);
+
+    // Agregar el footer (hora + copiar) que fue ocultado durante streaming
+    asegurarFooterEnMensaje(msgDiv);
+
+  } catch (err) {
+    clearTimeout(timeoutId);
+    const esTimeout = err.name === 'AbortError';
+    mostrarError(
+      esTimeout
+        ? '⚠️ La respuesta tardó demasiado. Revisa tu conexión o inténtalo de nuevo.'
+        : '⚠️ Error de conexión. Revisa tu internet o avisa a tu profesor.'
+    );
+    console.error('Error en streaming:', err);
+  } finally {
+    document.getElementById('btn_enviar').disabled = false;
+    enviando = false;
+  }
+}
+
+// Si el mensaje del bot se creó en modo streaming (sin footer), se lo añadimos ahora
+function asegurarFooterEnMensaje(msgDiv) {
+  if (msgDiv.querySelector('.msg-footer')) return;
+  const hora = obtenerHora();
+  const footer = document.createElement('div');
+  footer.className = 'msg-footer';
+  footer.innerHTML = `
+    <span class="msg-time">${hora}</span>
+    <button class="btn-copy" onclick="copiarMensaje(this)" aria-label="Copiar respuesta">📋 Copiar</button>
+  `;
+  msgDiv.appendChild(footer);
+}
+
+// ── Enter para enviar ─────────────────────────────────────────────────
+document.getElementById('mensaje').addEventListener('keypress', e => {
+  if (e.key === 'Enter' && !enviando) {
+    enviarMensaje();
+  }
+});
+</script>
+</body>
+</html>
