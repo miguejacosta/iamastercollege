@@ -1075,11 +1075,223 @@ header {
 
 </div><!-- /.app-shell -->
 
+<!-- ════════════════════════════════════════════════════════════════
+     PROMPT / PERSONA DEL TUTOR  (antes vivía en mani.py como PROMPT_BASE)
+     Se guarda como texto crudo (type="text/plain") para que los \ y $
+     de LaTeX no choquen con los escapes de JavaScript.
+     ──────────────────────────────────────────────────────────────── -->
+<script type="text/plain" id="prompt-base">
+Te llamas "MJD". Eres un tutor académico cercano y experto, especializado en matemáticas pero capaz de acompañar al estudiante de secundaria en todo su proceso de aprendizaje. Tu misión NO es darle respuestas masticadas; es GUIARLO para que entienda, razone y crezca. Sé sintético para que no se aburra.
+
+══════════════════════════════════════════════
+ PERSONALIDAD
+══════════════════════════════════════════════
+- Amable, cercano, respetuoso, con sabor costeño pedagógico (sin caricaturizar el acento).
+- Te diriges al estudiante como "joven", "señorita", "caballero", "muchacho/a".
+- Genuinamente interesado en que el estudiante COMPRENDA, no solo en que apruebe.
+- Sintético y al grano, pero con calidez. Nada de discursos largos.
+
+══════════════════════════════════════════════
+ ALCANCE DE TU AYUDA
+══════════════════════════════════════════════
+Tu núcleo es la matemática, pero también puedes apoyar al estudiante con:
+- Ejercicios y resolución de problemas (matemáticas, física básica, química básica, etc.).
+- Preparación para PRUEBAS SABER / ICFES: estrategias, análisis de preguntas, simulacros.
+- DISEÑO Y REDACCIÓN de preguntas tipo ICFES (contexto + enunciado + opciones + distractores).
+- Técnicas de estudio, organización del tiempo, manejo de nervios antes de exámenes.
+- Consejos académicos y orientación general estudiantil.
+
+══════════════════════════════════════════════
+ FASES DE TU RESPUESTA (IMPLÍCITAS, no las anuncies)
+══════════════════════════════════════════════
+1. Resolver paso a paso los procedimientos numéricos en LaTeX e indicar de forma muy sintética qué se hizo.
+2. Cada paso de la ecuación debe ir en una NUEVA LÍNEA, centrado. No unir múltiples pasos horizontales en una sola línea.
+3. HACER UNA PREGUNTA FINAL PEDAGÓGICA para confirmar que entendió.
+
+══════════════════════════════════════════════
+ REGLA PRINCIPAL — ADAPTA LA LONGITUD AL TIPO DE MENSAJE
+══════════════════════════════════════════════
+- Si el estudiante saluda → responde solo el saludo. Nada más.
+  Ejemplo: "¡Buenas, joven! ¿En qué le puedo ayudar hoy?"
+- Pregunta conceptual simple → 3 a 5 líneas máximo.
+- Ejercicio matemático → desarrollo completo con pasos verticales.
+- Consulta sobre ICFES o consejos → respuesta clara y enfocada, sin paja.
+
+RESTRICCIÓN CLAVE: No repitas tu presentación ni tus capacidades en cada mensaje. El estudiante ya sabe quién eres.
+
+══════════════════════════════════════════════
+ REGLAS GENERALES DE ESCRITURA
+══════════════════════════════════════════════
+- SIEMPRE usa formato LaTeX ($x=2$ o $$x=2$$).
+- CRÍTICO: El símbolo de porcentaje DEBE ir SIEMPRE escapado con barra invertida. Escribe $50\%$ (NUNCA $50%$).
+- Cero condescendencia. Trata al estudiante como alguien capaz.
+
+══════════════════════════════════════════════
+ FORMATO DE PROCEDIMIENTOS — DESARROLLO VERTICAL OBLIGATORIO
+══════════════════════════════════════════════
+
+REGLA ABSOLUTA E INVIOLABLE:
+Cada paso del procedimiento matemático va en SU PROPIO bloque $$...$$, en SU PROPIA línea.
+NUNCA uses \Rightarrow, \implies, \to, \rightarrow, \longrightarrow, flechas (⇒, →), ni
+comas para encadenar varios pasos en la misma línea.
+
+✅ EJEMPLO CORRECTO (así DEBES responder siempre):
+
+Despejamos $x$:
+
+$$2x + 4 = 10$$
+
+$$2x = 10 - 4$$
+
+$$2x = 6$$
+
+$$x = \dfrac{6}{2}$$
+
+$$x = 3$$
+
+❌ EJEMPLO INCORRECTO (NUNCA hagas esto — un solo bloque con flechas):
+
+$$2x+4=10 \Rightarrow 2x=6 \Rightarrow x=3$$
+
+❌ EJEMPLO INCORRECTO (NUNCA hagas esto — pasos separados por comas):
+
+$$2x+4=10,\ 2x=6,\ x=3$$
+
+RESPUESTA FINAL:
+El ÚLTIMO paso (la respuesta final al problema) va en su propio bloque $$...$$,
+igual que los demás pasos. NO uses \boxed{}, \fbox{}, \framebox ni ningún comando
+para encuadrar la respuesta. Simplemente escribe el resultado como un paso más.
+
+Ejemplo del último paso: $$x = 3$$
+
+Si la respuesta incluye unidades, escríbelas con \text{}:
+$$A = 25 \text{ cm}^2$$
+
+NÚMEROS GRANDES — CRÍTICO PARA QUE NO SE ROMPA EL RENDERIZADO:
+Dentro de bloques matemáticos $$...$$ NUNCA uses el punto (.) como separador de
+miles. El punto en LaTeX no es un separador de miles y rompe el renderizado.
+- ESCRIBE los números grandes SIN separadores: $$x > \dfrac{5000000}{25000}$$
+- Para el resultado, puedes usar \, (espacio fino) si quieres agrupar:
+  $$x > 200$$  ó  $$x = 5\,000\,000$$
+- El punto decimal SÍ es válido: $$x = 3.5$$ está bien.
+- NUNCA escribas $$\dfrac{5.000.000}{25.000}$$ — eso causa "Math input error".
+
+ENTRE CADA BLOQUE $$...$$ DEJA UN RENGLÓN EN BLANCO (una línea vacía) para que
+el estudiante vea claramente cada paso separado. Nunca pongas dos $$...$$ pegados.
+
+══════════════════════════════════════════════
+ PREGUNTAS TIPO ICFES / SABER 11
+══════════════════════════════════════════════
+
+A) Si el estudiante quiere RESOLVER una pregunta tipo ICFES:
+   1. Lee el contexto con calma y resúmelo en una frase.
+   2. Identifica QUÉ se está preguntando realmente (a veces el enunciado distrae).
+   3. Descarta opciones absurdas usando estrategia de eliminación.
+   4. Razona la opción correcta con un procedimiento corto y claro (en LaTeX si aplica).
+   5. Cierra con un tip: "aquí la trampa estaba en…".
+
+B) Si el estudiante quiere CREAR o DISEÑAR una pregunta tipo ICFES, sigue la estructura oficial:
+   - CONTEXTO: situación real, gráfico, tabla o texto breve que enmarque el problema.
+   - ENUNCIADO: claro y específico de lo que se pregunta.
+   - 4 OPCIONES (A, B, C, D): una sola correcta, las otras tres son distractores PLAUSIBLES (no obviamente malos).
+   - NIVEL declarado: básico / intermedio / avanzado.
+   - COMPETENCIA evaluada: interpretación, formulación, razonamiento o comunicación.
+   - Después, comenta brevemente por qué cada distractor es plausible pero incorrecto (esto educa más que la respuesta sola).
+
+CONSEJOS ICFES que puedes compartir cuando aplique:
+- Tiempo: aproximadamente $1.5$ min por pregunta de matemáticas.
+- Leer SIEMPRE el contexto completo antes de mirar las opciones.
+- Subrayar datos clave del enunciado.
+- No quedarse trancado en una pregunta: marcar y seguir, volver al final.
+- Revisar al final si queda tiempo.
+
+══════════════════════════════════════════════
+ CONSEJOS DE ESTUDIO Y BIENESTAR ACADÉMICO
+══════════════════════════════════════════════
+
+Cuando el estudiante pida orientación más allá del ejercicio:
+- Técnicas: Pomodoro ($25$ min de estudio + $5$ de descanso), mapas mentales, resolver antes de mirar la solución, enseñarle lo aprendido a otra persona.
+- Manejo de nervios: respiración $4{-}7{-}8$ (inhalar 4s, sostener 7s, exhalar 8s), dormir bien la noche previa, no estudiar madrugando el día del examen.
+- Organización: agenda semanal, priorizar los temas más débiles, intercalar materias para no saturarse.
+- Hazlo breve, práctico, con cariño costeño. Nada de sermones.
+
+══════════════════════════════════════════════
+ SISTEMA DE GRÁFICAS — INSTRUCCIONES CRÍTICAS
+══════════════════════════════════════════════
+
+Tienes la capacidad de generar gráficas visuales para el estudiante. Usa estas etiquetas SOLO cuando el ejercicio lo amerite o el estudiante lo pida.
+
+1) TRIÁNGULO RECTÁNGULO:
+   Cuando resuelvas un ejercicio de triángulo rectángulo y tengas los valores calculados,
+   incluye AL FINAL de tu respuesta esta etiqueta (en una línea sola):
+
+   [[GRAFICA:tipo=resultado,angulo=VALOR,opuesto=VALOR,adyacente=VALOR,hipotenusa=VALOR]]
+
+   Ejemplo: [[GRAFICA:tipo=resultado,angulo=30,opuesto=5,adyacente=8.66,hipotenusa=10]]
+
+   - Usa tipo=resultado cuando muestres la solución completa.
+   - Incluye TODOS los valores numéricos que conozcas (sin unidades, solo números).
+   - Los valores deben ser números decimales, NO fracciones ni expresiones.
+
+2) GRÁFICA DE FUNCIÓN:
+   Cuando el estudiante pida graficar una función o cuando sea útil visualizarla,
+   incluye AL FINAL de tu respuesta:
+
+   [[FUNCION:expr=EXPRESION,xmin=VALOR,xmax=VALOR,titulo=TEXTO]]
+
+   Ejemplo: [[FUNCION:expr=x**2-4,xmin=-5,xmax=5,titulo=Parábola y=x²-4]]
+   Ejemplo: [[FUNCION:expr=sin(x),xmin=-6.28,xmax=6.28,titulo=Función seno]]
+   Ejemplo: [[FUNCION:expr=2*x+3,xmin=-5,xmax=5,titulo=Recta y=2x+3]]
+
+   - La expresión debe usar sintaxis Python/SymPy: ** para potencias, sin(x), cos(x),
+     tan(x), sqrt(x), log(x), exp(x), abs(x), pi.
+   - Escoge un rango xmin/xmax apropiado para que se vea bien la función.
+
+REGLAS DE LAS GRÁFICAS:
+- NO menciones la etiqueta [[GRAFICA:...]] ni [[FUNCION:...]] al estudiante. Es invisible para él.
+- La etiqueta SIEMPRE va en la ÚLTIMA línea, después de toda tu explicación.
+- Solo genera UNA gráfica por respuesta.
+- NO generes gráficas para saludos ni preguntas conceptuales simples.
+- Si el estudiante dice "grafica", "dibuja", "muéstrame la gráfica", "haz el gráfico" → genera la gráfica correspondiente.
+</script>
+
 <script>
-// ── Configuración ────────────────────────────────────────────────────
-const SERVER_URL = "https://tutor-mjd-api-411083505938.us-central1.run.app/chat";
-const STREAM_URL = SERVER_URL.replace('/chat', '/chat-stream');
-const BASE_URL   = SERVER_URL.replace('/chat', '');
+// ════════════════════════════════════════════════════════════════
+//  Configuración: GEMINI DIRECTO desde el navegador (sin backend)
+//  El "cerebro" ahora es Gemini 3.1 Flash Lite, llamado con una API key
+//  gratuita de Google. Ya NO hay servidor Cloud Run / mani.py: TODO corre
+//  como archivos estáticos en GitHub Pages.
+// ════════════════════════════════════════════════════════════════
+const GEMINI = {
+  // ⚠️ Esta clave queda VISIBLE en el código fuente de la página pública.
+  //    Restríngela por "Referente HTTP" en Google Cloud y mantén el plan
+  //    GRATUITO (sin facturación) para que el peor caso sea solo el límite.
+  apiKey: "AQ.Ab8RN6IVuZZVdis5vabkxyUIGHTykcCZAl-cBqA_PhDTFxvTAA",
+  model:  "gemini-3.1-flash-lite",
+
+  // "studio" → API de Google AI Studio (generativelanguage.googleapis.com).
+  //            ✅ TU CLAVE ACTUAL FUNCIONA AQUÍ (probado: respondió 200 OK).
+  // "vertex" → Vertex AI Express Mode (aiplatform.googleapis.com). Solo si
+  //            algún día usas una clave cuyo proyecto tenga Vertex habilitado.
+  // ¿Cambiaste de clave y falla? Saca una gratis en https://aistudio.google.com/apikey
+  mode:   "studio",
+
+  temperature: 0.15
+};
+
+function geminiStreamURL() {
+  const m = encodeURIComponent(GEMINI.model);
+  const k = encodeURIComponent(GEMINI.apiKey);
+  if (GEMINI.mode === 'studio') {
+    return `https://generativelanguage.googleapis.com/v1beta/models/${m}:streamGenerateContent?alt=sse&key=${k}`;
+  }
+  // Vertex AI Express Mode (claves "AQ.")
+  return `https://aiplatform.googleapis.com/v1/publishers/google/models/${m}:streamGenerateContent?alt=sse&key=${k}`;
+}
+
+// Persona del tutor: se lee como texto crudo del <script type="text/plain">.
+const PROMPT_BASE = (document.getElementById('prompt-base')?.textContent || '').trim();
+
 const MAX_HISTORIAL = 20;
 const FETCH_TIMEOUT_MS = 90000;
 const STORAGE_KEY_HISTORIAL = 'tutor_mjd_historial_v1';
@@ -1189,98 +1401,243 @@ function lightboxKeyHandler(e) {
   }
 }
 
-// ── Gráfica en chat ─────────────────────────────────────────────────
-async function mostrarGraficaEnChat(params) {
-  const qs = new URLSearchParams();
-  if (params.angulo)     qs.set("angulo",     params.angulo);
-  if (params.opuesto)    qs.set("opuesto",    params.opuesto);
-  if (params.adyacente)  qs.set("adyacente",  params.adyacente);
-  if (params.hipotenusa) qs.set("hipotenusa", params.hipotenusa);
+// ════════════════════════════════════════════════════════════════
+//  GRÁFICAS EN EL NAVEGADOR (SVG)
+//  Reemplazan a las que antes dibujaba matplotlib en mani.py. Aquí no hay
+//  Python: el triángulo y la función se dibujan como SVG en el cliente.
+// ════════════════════════════════════════════════════════════════
 
-  const tipo  = params.tipo === 'resultado' ? 'resultado' : 'datos';
-  const label = tipo === 'resultado'
-    ? '📐 Triángulo resuelto — toca para explorar'
-    : '📐 Datos del ejercicio — toca para explorar';
+function escaparXML(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
+function svgADataUri(svg) {
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// Inserta un SVG ya construido como gráfica dentro de la última burbuja bot.
+function insertarGraficaSVG(svg, label) {
+  if (!svg) return;
   const chat   = document.getElementById('chat');
   const ultimo = chat.querySelector('.bot:last-child');
   if (!ultimo) return;
 
   const wrapper = document.createElement('div');
   wrapper.className = 'msg-graph';
-
-  const img = document.createElement('img');
-  img.alt = 'Triángulo rectángulo';
-  img.src = '';
-  img.style.opacity = '0.4';
+  wrapper.innerHTML = svg;
 
   const hint = document.createElement('div');
   hint.className = 'msg-graph-hint';
   hint.innerHTML = `🔍 ${label}`;
-
-  wrapper.appendChild(img);
   wrapper.appendChild(hint);
-  ultimo.appendChild(wrapper);
-  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
 
-  try {
-    const res  = await fetch(`${BASE_URL}/graph?${qs.toString()}`);
-    const data = await res.json();
-    if (data.imagen) {
-      const src = "data:image/png;base64," + data.imagen;
-      img.src = src;
-      img.style.opacity = '1';
-      img.style.transition = 'opacity 0.4s';
-      wrapper.onclick = () => abrirLightbox(src);
-    }
-  } catch(e) {
-    console.error("Error cargando gráfica:", e);
-    wrapper.remove();
-  }
+  ultimo.appendChild(wrapper);
+  wrapper.onclick = () => abrirLightbox(svgADataUri(svg));
+  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
 }
 
-async function mostrarFuncionEnChat(params) {
-  const qs = new URLSearchParams();
-  qs.set("expr",   params.expr   || "x**2");
-  qs.set("xmin",   params.xmin   || "-10");
-  qs.set("xmax",   params.xmax   || "10");
-  qs.set("titulo", params.titulo || "Gráfica de función");
+function mostrarGraficaEnChat(params) {
+  const svg = svgTriangulo(params);
+  const label = params.tipo === 'resultado'
+    ? '📐 Triángulo resuelto — toca para ampliar'
+    : '📐 Datos del ejercicio — toca para ampliar';
+  insertarGraficaSVG(svg, label);
+}
 
-  const chat   = document.getElementById('chat');
-  const ultimo = chat.querySelector('.bot:last-child');
-  if (!ultimo) return;
+function mostrarFuncionEnChat(params) {
+  const svg = svgFuncion(params);
+  insertarGraficaSVG(svg, '📈 Gráfica generada — toca para ampliar');
+}
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'msg-graph';
+// ── Evaluador SEGURO de expresiones (sin eval libre) ──
+// Acepta la sintaxis Python/SymPy que pide el prompt: ** , sin, cos, tan,
+// sqrt, log (natural), ln, exp, abs, pi, e. Valida con lista blanca para
+// no ejecutar nada peligroso.
+function compilarFuncion(expr) {
+  if (!expr) return null;
+  let s = String(expr).trim().replace(/\^/g, '**');
 
-  const img = document.createElement('img');
-  img.alt = params.titulo || 'Gráfica de función';
-  img.src = '';
-  img.style.opacity = '0.4';
+  // Lista blanca de identificadores permitidos (los compuestos primero).
+  const ids = ['asin','acos','atan','sqrt','log10','sinh','cosh','tanh',
+               'sin','cos','tan','log','ln','exp','abs','sign','floor','ceil','pi','e','x'];
+  let test = s.replace(/\*\*/g, '*');
+  for (const id of ids) test = test.split(id).join('');
+  if (/[a-zA-Z]/.test(test)) return null;             // identificador no permitido
+  if (!/^[0-9.\s+\-*/()]*$/.test(test)) return null;  // carácter no permitido
 
-  const hint = document.createElement('div');
-  hint.className = 'msg-graph-hint';
-  hint.innerHTML = '📈 Gráfica generada — toca para ampliar';
-
-  wrapper.appendChild(img);
-  wrapper.appendChild(hint);
-  ultimo.appendChild(wrapper);
-  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  const js = s
+    .replace(/\bpi\b/g, '(Math.PI)')
+    .replace(/\be\b/g, '(Math.E)')
+    .replace(/\bln\b/g, 'Math.log')
+    .replace(/\blog10\b/g, 'Math.log10')
+    .replace(/\blog\b/g, 'Math.log')
+    .replace(/\b(asin|acos|atan|sinh|cosh|tanh|sin|cos|tan|sqrt|exp|abs|sign|floor|ceil)\b/g, 'Math.$1');
 
   try {
-    const res  = await fetch(`${BASE_URL}/graph-func?${qs.toString()}`);
-    const data = await res.json();
-    if (data.imagen) {
-      const src = "data:image/png;base64," + data.imagen;
-      img.src = src;
-      img.style.opacity = '1';
-      img.style.transition = 'opacity 0.4s';
-      wrapper.onclick = () => abrirLightbox(src);
-    }
-  } catch(e) {
-    console.error("Error cargando gráfica de función:", e);
-    wrapper.remove();
+    const f = new Function('x', '"use strict"; const r = (' + js + '); return (typeof r === "number" && isFinite(r)) ? r : NaN;');
+    f(1); // prueba de humo
+    return f;
+  } catch (e) { return null; }
+}
+
+// ── Triángulo rectángulo en SVG (misma lógica trig que mani.py) ──
+function svgTriangulo(p) {
+  let ang = (p.angulo     != null && p.angulo     !== '') ? parseFloat(p.angulo)     : null;
+  let opp = (p.opuesto    != null && p.opuesto    !== '') ? parseFloat(p.opuesto)    : null;
+  let adj = (p.adyacente  != null && p.adyacente  !== '') ? parseFloat(p.adyacente)  : null;
+  let hyp = (p.hipotenusa != null && p.hipotenusa !== '') ? parseFloat(p.hipotenusa) : null;
+  const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+
+  if (ang) {
+    const r = rad(ang);
+    if (opp && !adj) adj = opp / Math.tan(r);
+    if (opp && !hyp) hyp = opp / Math.sin(r);
+    if (adj && !opp) opp = adj * Math.tan(r);
+    if (adj && !hyp) hyp = adj / Math.cos(r);
+    if (hyp && !opp) opp = hyp * Math.sin(r);
+    if (hyp && !adj) adj = hyp * Math.cos(r);
   }
+  if (!adj || !opp) { ang = ang || 30; adj = 4; const r = rad(ang); opp = adj * Math.tan(r); hyp = adj / Math.cos(r); }
+  if (!hyp) hyp = Math.sqrt(adj * adj + opp * opp);
+  if (!ang) ang = deg(Math.atan2(opp, adj));
+
+  const W = 460, H = 360, pad = 80;
+  const sc = Math.min((W - 2 * pad) / adj, (H - 2 * pad) / opp);
+  const ax = pad,            ay = H - pad;            // A (vértice del ángulo θ)
+  const bx = pad + adj * sc, by = H - pad;            // B (ángulo recto)
+  const cx = pad + adj * sc, cy = H - pad - opp * sc; // C
+
+  // Arco del ángulo θ en A (como polilínea, siempre correcto).
+  const arcR = Math.max(22, Math.min(adj, opp) * sc * 0.24);
+  const arcPts = [];
+  for (let i = 0; i <= 24; i++) {
+    const t = rad(ang) * i / 24;
+    arcPts.push((ax + arcR * Math.cos(t)).toFixed(1) + ',' + (ay - arcR * Math.sin(t)).toFixed(1));
+  }
+
+  // Cuadradito del ángulo recto en B.
+  const sq = Math.max(12, Math.min(adj, opp) * sc * 0.10);
+  const sqPts = [(bx - sq) + ',' + by, (bx - sq) + ',' + (by - sq), bx + ',' + (by - sq)].join(' ');
+
+  const txx = ax + arcR * 1.55 * Math.cos(rad(ang / 2));
+  const txy = ay - arcR * 1.55 * Math.sin(rad(ang / 2));
+  const halo = 'style="paint-order:stroke" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round"';
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:440px;height:auto;display:block;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.4)">
+<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#ffffff"/>
+<text x="${W / 2}" y="28" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="700" fill="#1A252F">Triángulo Rectángulo</text>
+<polygon points="${ax},${ay} ${bx},${by} ${cx},${cy}" fill="#EBF5FB" stroke="#2980B9" stroke-width="2.4"/>
+<polyline points="${sqPts}" fill="none" stroke="#2C3E50" stroke-width="1.4"/>
+<polyline points="${arcPts.join(' ')}" fill="none" stroke="#C0392B" stroke-width="2"/>
+<text x="${txx.toFixed(1)}" y="${txy.toFixed(1)}" font-family="sans-serif" font-size="13" font-weight="700" fill="#C0392B" ${halo}>&#952; = ${ang.toFixed(1)}&#176;</text>
+<text x="${(ax + bx) / 2}" y="${by + 26}" text-anchor="middle" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#1E8449" ${halo}>Adyacente = ${adj.toFixed(2)}</text>
+<text x="${bx + 12}" y="${(by + cy) / 2}" text-anchor="start" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#7D3C98" ${halo}>Opuesto = ${opp.toFixed(2)}</text>
+<text x="${((ax + cx) / 2) - 8}" y="${((ay + cy) / 2) - 10}" text-anchor="end" font-family="sans-serif" font-size="12.5" font-weight="600" fill="#D35400" ${halo}>Hipotenusa = ${hyp.toFixed(2)}</text>
+<circle cx="${ax}" cy="${ay}" r="3.5" fill="#2C3E50"/>
+<circle cx="${bx}" cy="${by}" r="3.5" fill="#2C3E50"/>
+<circle cx="${cx}" cy="${cy}" r="3.5" fill="#2C3E50"/>
+</svg>`;
+}
+
+// ── Gráfica de función en SVG ──
+function svgFuncion(p) {
+  const expr   = (p.expr || 'x**2');
+  const titulo = (p.titulo || ('y = ' + expr));
+  let xmin = parseFloat(p.xmin), xmax = parseFloat(p.xmax);
+  if (!isFinite(xmin)) xmin = -10;
+  if (!isFinite(xmax)) xmax = 10;
+  if (xmin >= xmax) { xmin = -10; xmax = 10; }
+
+  const f = compilarFuncion(expr);
+  if (!f) return null;
+
+  const N = 400, xs = [], ys = [];
+  for (let i = 0; i <= N; i++) {
+    const x = xmin + (xmax - xmin) * i / N;
+    let y; try { y = f(x); } catch (e) { y = NaN; }
+    if (isFinite(y)) y = Math.max(-1e6, Math.min(1e6, y)); else y = NaN;
+    xs.push(x); ys.push(y);
+  }
+
+  const fin = ys.filter(v => isFinite(v)).slice().sort((a, b) => a - b);
+  if (fin.length === 0) return null;
+  // Recorte por percentiles para que una asíntota no aplaste la curva.
+  let ymin = fin[Math.floor(fin.length * 0.02)];
+  let ymax = fin[Math.floor(fin.length * 0.98)];
+  if (!isFinite(ymin) || !isFinite(ymax) || ymin === ymax) { ymin = fin[0]; ymax = fin[fin.length - 1]; }
+  if (ymin === ymax) { ymin -= 1; ymax += 1; }
+  const padY = (ymax - ymin) * 0.12; ymin -= padY; ymax += padY;
+  if (ymin > 0) ymin = 0;  // procurar que el eje X quede visible
+  if (ymax < 0) ymax = 0;
+
+  const W = 480, H = 360, mL = 48, mR = 18, mT = 42, mB = 34;
+  const pw = W - mL - mR, ph = H - mT - mB;
+  const X = x => mL + (x - xmin) / (xmax - xmin) * pw;
+  const Y = y => mT + (ymax - y) / (ymax - ymin) * ph;
+
+  // Trazo de la curva (corta el path en huecos NaN / fuera de rango).
+  let d = '', dibujando = false;
+  for (let i = 0; i <= N; i++) {
+    if (isFinite(ys[i]) && ys[i] >= ymin && ys[i] <= ymax) {
+      d += (dibujando ? ' L ' : ' M ') + X(xs[i]).toFixed(1) + ' ' + Y(ys[i]).toFixed(1);
+      dibujando = true;
+    } else { dibujando = false; }
+  }
+
+  // Grilla + ticks numéricos.
+  let grilla = '';
+  for (let i = 0; i <= 4; i++) {
+    const gx = mL + pw * i / 4, vx = xmin + (xmax - xmin) * i / 4;
+    grilla += `<line x1="${gx.toFixed(1)}" y1="${mT}" x2="${gx.toFixed(1)}" y2="${H - mB}" stroke="#e3ebf2" stroke-width="1"/>`;
+    grilla += `<text x="${gx.toFixed(1)}" y="${H - mB + 14}" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#5a6b7d">${(+vx.toFixed(2))}</text>`;
+    const gy = mT + ph * i / 4, vy = ymax - (ymax - ymin) * i / 4;
+    grilla += `<line x1="${mL}" y1="${gy.toFixed(1)}" x2="${W - mR}" y2="${gy.toFixed(1)}" stroke="#e3ebf2" stroke-width="1"/>`;
+    grilla += `<text x="${mL - 5}" y="${(gy + 3).toFixed(1)}" text-anchor="end" font-family="sans-serif" font-size="9" fill="#5a6b7d">${(+vy.toFixed(2))}</text>`;
+  }
+
+  // Ejes.
+  let ejes = '';
+  if (ymin <= 0 && ymax >= 0) { const y0 = Y(0); ejes += `<line x1="${mL}" y1="${y0.toFixed(1)}" x2="${W - mR}" y2="${y0.toFixed(1)}" stroke="#2C3E50" stroke-width="1.1"/>`; }
+  if (xmin <= 0 && xmax >= 0) { const x0 = X(0); ejes += `<line x1="${x0.toFixed(1)}" y1="${mT}" x2="${x0.toFixed(1)}" y2="${H - mB}" stroke="#2C3E50" stroke-width="1.1"/>`; }
+
+  // Raíces: detecta cruces de signo Y muestras que caen justo en y=0
+  // (p.ej. x**2-4 sobre [-5,5], donde la malla pega exacto en x=±2).
+  let marcas = '', nraices = 0;
+  const raicesX = [];
+  const tol = (xmax - xmin) / N * 0.5;
+  for (let i = 0; i <= N && nraices < 6; i++) {
+    let xr = null;
+    if (isFinite(ys[i]) && ys[i] === 0) {
+      xr = xs[i];
+    } else if (i < N && isFinite(ys[i]) && isFinite(ys[i + 1]) && ys[i] * ys[i + 1] < 0) {
+      const t = ys[i] / (ys[i] - ys[i + 1]);
+      xr = xs[i] + t * (xs[i + 1] - xs[i]);
+    }
+    if (xr !== null && !raicesX.some(v => Math.abs(v - xr) < tol)) {
+      raicesX.push(xr);
+      marcas += `<circle cx="${X(xr).toFixed(1)}" cy="${Y(0).toFixed(1)}" r="4" fill="#E74C3C"/>`;
+      marcas += `<text x="${X(xr).toFixed(1)}" y="${(Y(0) - 8).toFixed(1)}" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#E74C3C">${(+xr.toFixed(2))}</text>`;
+      nraices++;
+    }
+  }
+  if (xmin <= 0 && xmax >= 0) {
+    let y0; try { y0 = f(0); } catch (e) { y0 = NaN; }
+    if (isFinite(y0) && y0 >= ymin && y0 <= ymax) {
+      marcas += `<circle cx="${X(0).toFixed(1)}" cy="${Y(y0).toFixed(1)}" r="4" fill="#27AE60"/>`;
+      marcas += `<text x="${(X(0) + 7).toFixed(1)}" y="${Y(y0).toFixed(1)}" font-family="sans-serif" font-size="9" font-weight="700" fill="#27AE60">${(+y0.toFixed(2))}</text>`;
+    }
+  }
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;height:auto;display:block;border-radius:10px;box-shadow:0 2px 14px rgba(0,0,0,.4)">
+<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#ffffff"/>
+${grilla}
+${ejes}
+<path d="${d.trim()}" fill="none" stroke="#2980B9" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+${marcas}
+<text x="${W / 2}" y="26" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="700" fill="#1A252F">${escaparXML(titulo)}</text>
+</svg>`;
 }
 
 // ── Partículas matemáticas ───────────────────────────────────────────
@@ -1400,6 +1757,95 @@ function aplicarAnimacionPasos(msgDiv) {
   pasos.forEach((el, i) => {
     el.style.animationDelay = `${i * 120}ms`;
   });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  POST-PROCESADO DE LA RESPUESTA  (lo que antes hacía mani.py)
+//  - quita **negritas**
+//  - parte $$...\Rightarrow...$$ en pasos verticales
+//  - elimina \boxed/\fbox/\framebox y los puntos separadores de miles
+//    que rompen el renderizado de MathJax
+// ════════════════════════════════════════════════════════════════
+function limpiarNegritas(t) {
+  return t.replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+
+const RE_FLECHAS = /\\Rightarrow|\\Longrightarrow|\\implies|⇒|⟹/;
+function dividirPasosVerticales(t) {
+  return t.replace(/\$\$([\s\S]+?)\$\$/g, (m, c) => {
+    if (!RE_FLECHAS.test(c)) return m;
+    const partes = c.split(/\\Rightarrow|\\Longrightarrow|\\implies|⇒|⟹/)
+                    .map(s => s.trim()).filter(Boolean);
+    if (partes.length <= 1) return m;
+    return partes.map(p => '$$' + p + '$$').join('\n\n');
+  });
+}
+
+const RE_ENCUADRE = /\\(?:boxed|fbox|framebox)\s*\{((?:[^{}]|\{[^{}]*\})*)\}/g;
+const RE_MILES    = /(?<=\d)\.(?=\d{3}(?:\.\d{3})*(?!\d))/g;
+function limpiarContenidoMat(expr) {
+  return expr.replace(RE_ENCUADRE, '$1').replace(RE_MILES, '');
+}
+function sanitizarMat(t) {
+  t = t.replace(/\$\$([\s\S]+?)\$\$/g, (m, c) => '$$' + limpiarContenidoMat(c) + '$$');
+  t = t.replace(/(?<!\$)\$([^\$\n]+?)\$(?!\$)/g, (m, c) => '$' + limpiarContenidoMat(c) + '$');
+  return t;
+}
+function postProcesar(t) {
+  return sanitizarMat(dividirPasosVerticales(limpiarNegritas(t)));
+}
+
+// Extrae las etiquetas [[GRAFICA:...]] / [[FUNCION:...]] del texto del modelo
+// y devuelve el texto ya limpio + los parámetros (igual que _extraer_tags en mani.py).
+function extraerTags(texto) {
+  let grafica = null, funcion = null;
+
+  const mTri = texto.match(/\[\[GRAFICA:([^\]]+)\]\]/);
+  if (mTri) {
+    const params = {};
+    mTri[1].split(',').forEach(par => {
+      const i = par.indexOf('=');
+      if (i < 0) return;
+      const k = par.slice(0, i).trim(), v = par.slice(i + 1).trim();
+      if (k !== 'tipo') { const n = parseFloat(v); params[k] = isNaN(n) ? v : n; }
+      else params[k] = v;
+    });
+    grafica = params;
+    texto = texto.replace(/\[\[GRAFICA:[^\]]+\]\]/, '').trim();
+  }
+
+  const mFun = texto.match(/\[\[FUNCION:([^\]]+)\]\]/);
+  if (mFun) {
+    const params = {};
+    mFun[1].split(',').forEach(par => {
+      const i = par.indexOf('=');
+      if (i < 0) return;
+      params[par.slice(0, i).trim()] = par.slice(i + 1).trim();
+    });
+    funcion = params;
+    texto = texto.replace(/\[\[FUNCION:[^\]]+\]\]/, '').trim();
+  }
+
+  return { texto, grafica, funcion };
+}
+
+// Saca el texto de un chunk SSE de Gemini (candidates[].content.parts[].text).
+function extraerTextoGemini(ev) {
+  try {
+    const parts = ev?.candidates?.[0]?.content?.parts;
+    if (!parts) return '';
+    return parts.map(p => p.text || '').join('');
+  } catch (e) { return ''; }
+}
+
+// Mensaje amable según el código HTTP que devuelva la API.
+function mensajeErrorHTTP(status, detalle) {
+  const extra = detalle ? `<br><small style="opacity:.7">${escaparXML(detalle)}</small>` : '';
+  if (status === 400) return '⚠️ Petición inválida. Revisa el nombre del modelo (GEMINI.model) o el formato.' + extra;
+  if (status === 401 || status === 403) return '⚠️ La API key fue rechazada. Verifica que la clave y el modo (vertex/studio) coincidan, o que la clave no esté restringida para este dominio.' + extra;
+  if (status === 404) return '⚠️ Modelo no encontrado. Revisa GEMINI.model.' + extra;
+  if (status === 429) return '⏳ Se alcanzó el límite gratuito por ahora. Espera un momento e inténtalo de nuevo.' + extra;
+  return `⚠️ El servicio respondió con un error (HTTP ${status}).` + extra;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1778,7 +2224,6 @@ async function ejecutarStreaming(payload) {
   let msgBody   = null;
 
   let textoAcumulado = '';
-  let textoFinal     = null;
   let ultimaRenderizacion = 0;
 
   const controller = new AbortController();
@@ -1791,9 +2236,13 @@ async function ejecutarStreaming(payload) {
     msgBody = msgDiv.querySelector('.msg-body');
   };
 
+  // Durante el stream ocultamos lo que venga desde "[[" (las etiquetas de
+  // gráfica que el modelo escribe al final); se procesan al terminar.
   const renderParcial = () => {
     if (!msgBody) return;
-    msgBody.innerHTML = marked.parse(textoAcumulado);
+    const corte = textoAcumulado.indexOf('[[');
+    const visible = corte >= 0 ? textoAcumulado.slice(0, corte) : textoAcumulado;
+    msgBody.innerHTML = marked.parse(visible);
     const chat = document.getElementById('chat');
     chat.scrollTop = chat.scrollHeight;
   };
@@ -1813,14 +2262,46 @@ async function ejecutarStreaming(payload) {
     }
   };
 
+  // ── Construir la petición para Gemini (lo que hacía _preparar_contents) ──
+  const contents = [];
+  (payload.historial || []).forEach(m => {
+    contents.push({
+      role:  m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.content || '' }]
+    });
+  });
+
+  const partesActuales = [];
+  if (payload.file_b64 && payload.mime_type) {
+    partesActuales.push({ inlineData: { mimeType: payload.mime_type, data: payload.file_b64 } });
+  }
+  partesActuales.push({
+    text: payload.msg || 'Por favor revisa el archivo adjunto y ayúdame a entenderlo.'
+  });
+  contents.push({ role: 'user', parts: partesActuales });
+
+  const body = {
+    systemInstruction: { parts: [{ text: PROMPT_BASE }] },
+    contents,
+    generationConfig: { temperature: GEMINI.temperature }
+  };
+
   try {
-    const res = await fetch(STREAM_URL, {
+    const res = await fetch(geminiStreamURL(), {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
+      body:    JSON.stringify(body),
       signal:  controller.signal
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    if (!res.ok) {
+      let detalle = '';
+      try { const ej = await res.json(); detalle = ej?.error?.message || ''; } catch (e) {}
+      clearTimeout(timeoutId);
+      console.error('Gemini HTTP', res.status, detalle);
+      mostrarError(mensajeErrorHTTP(res.status, detalle));
+      return;
+    }
 
     const reader  = res.body.getReader();
     const decoder = new TextDecoder();
@@ -1831,64 +2312,49 @@ async function ejecutarStreaming(payload) {
       if (done) break;
       sseBuffer += decoder.decode(value, { stream: true });
 
-      const eventos = sseBuffer.split('\n\n');
+      // Gemini separa eventos SSE con \r\n\r\n (no \n\n). Toleramos ambos.
+      const eventos = sseBuffer.split(/\r?\n\r?\n/);
       sseBuffer = eventos.pop();
 
       for (const evtCrudo of eventos) {
-        const linea = evtCrudo.split('\n').find(l => l.startsWith('data: '));
+        const linea = evtCrudo.split(/\r?\n/).find(l => l.startsWith('data:'));
         if (!linea) continue;
+        const json = linea.slice(linea.indexOf(':') + 1).trim();
+        if (!json || json === '[DONE]') continue;
         let ev;
-        try { ev = JSON.parse(linea.slice(6)); }
-        catch (e) { console.warn('SSE JSON parse error:', linea); continue; }
+        try { ev = JSON.parse(json); }
+        catch (e) { continue; }
 
-        if (ev.type === 'chunk') {
+        const txt = extraerTextoGemini(ev);
+        if (txt) {
           asegurarBurbuja();
-          textoAcumulado += ev.text;
+          textoAcumulado += txt;
           const ahora = performance.now();
           if (ahora - ultimaRenderizacion > 70) {
             renderParcial();
             ultimaRenderizacion = ahora;
           }
-
-        } else if (ev.type === 'final') {
-          textoFinal = ev.text;
-
-        } else if (ev.type === 'grafica') {
-          asegurarBurbuja();
-          mostrarGraficaEnChat(ev.params);
-
-        } else if (ev.type === 'funcion') {
-          asegurarBurbuja();
-          mostrarFuncionEnChat(ev.params);
-
-        } else if (ev.type === 'error') {
-          textoFinal = null;
-          clearTimeout(timeoutId);
-          mostrarError(ev.msg || '⚠️ Error en el servidor.');
-          enviando = false;
-          document.getElementById('btn_enviar').disabled = false;
-          return;
-
-        } else if (ev.type === 'done') {
-          // fin del stream
         }
       }
     }
 
     clearTimeout(timeoutId);
 
-    if (!msgDiv && !textoFinal) {
-      mostrarError('⚠️ No se recibió respuesta.');
+    if (!textoAcumulado.trim()) {
+      mostrarError('⚠️ El modelo no devolvió texto (posible bloqueo de seguridad o límite). Intenta reformular tu pregunta.');
       return;
     }
 
     asegurarBurbuja();
-    const textoParaRender = textoFinal || textoAcumulado;
 
-    historialSesion.push({ role: 'model', content: textoParaRender });
+    // Post-procesado idéntico al backend + extracción de gráficas.
+    const limpio = postProcesar(textoAcumulado);
+    const { texto, grafica, funcion } = extraerTags(limpio);
+
+    historialSesion.push({ role: 'model', content: texto });
     guardarHistorial();
 
-    msgBody.innerHTML = procesarTextoSeguro(textoParaRender);
+    msgBody.innerHTML = procesarTextoSeguro(texto);
     msgDiv.classList.remove('streaming');
 
     if (window.MathJax) {
@@ -1899,8 +2365,10 @@ async function ejecutarStreaming(payload) {
       }
     }
     aplicarAnimacionPasos(msgDiv);
-
     asegurarFooterEnMensaje(msgDiv);
+
+    if (grafica) mostrarGraficaEnChat(grafica);
+    if (funcion) mostrarFuncionEnChat(funcion);
 
   } catch (err) {
     clearTimeout(timeoutId);
@@ -1908,9 +2376,9 @@ async function ejecutarStreaming(payload) {
     mostrarError(
       esTimeout
         ? '⚠️ La respuesta tardó demasiado. Revisa tu conexión o inténtalo de nuevo.'
-        : '⚠️ Error de conexión. Revisa tu internet o avisa a tu profesor.'
+        : '⚠️ Error de conexión con Gemini. Si es la primera vez, puede ser un bloqueo CORS de la clave Vertex (AQ.): saca una clave gratis en https://aistudio.google.com/apikey y pon GEMINI.mode = "studio". Mira detalles en la consola (F12).'
     );
-    console.error('Error en streaming:', err);
+    console.error('Error en streaming Gemini:', err);
   } finally {
     document.getElementById('btn_enviar').disabled = false;
     enviando = false;
