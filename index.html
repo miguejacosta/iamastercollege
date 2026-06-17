@@ -1263,30 +1263,22 @@ REGLAS DE LAS GRÁFICAS:
 //  como archivos estáticos en GitHub Pages.
 // ════════════════════════════════════════════════════════════════
 const GEMINI = {
-  // ⚠️ Esta clave queda VISIBLE en el código fuente de la página pública.
-  //    Restríngela por "Referente HTTP" en Google Cloud y mantén el plan
-  //    GRATUITO (sin facturación) para que el peor caso sea solo el límite.
-  apiKey: "AQ.Ab8RN6IVuZZVdis5vabkxyUIGHTykcCZAl-cBqA_PhDTFxvTAA",
-  model:  "gemini-3.1-flash-lite",
+  // ✅ AQUÍ NO VA NINGUNA CLAVE. La clave de Gemini vive ESCONDIDA como
+  //    "secreto" en tu proxy de Cloudflare. Esta página solo conoce la URL
+  //    del proxy, por eso ES SEGURO subirla a GitHub.
+  //
+  //    Pega abajo la URL de TU Worker (la que termina en .workers.dev),
+  //    SIN barra "/" al final. Ej: https://tutor-mjd.miguel.workers.dev
+  proxyURL: "https://TU-WORKER.TU-SUBDOMINIO.workers.dev",
 
-  // "studio" → API de Google AI Studio (generativelanguage.googleapis.com).
-  //            ✅ TU CLAVE ACTUAL FUNCIONA AQUÍ (probado: respondió 200 OK).
-  // "vertex" → Vertex AI Express Mode (aiplatform.googleapis.com). Solo si
-  //            algún día usas una clave cuyo proyecto tenga Vertex habilitado.
-  // ¿Cambiaste de clave y falla? Saca una gratis en https://aistudio.google.com/apikey
-  mode:   "studio",
-
+  model:       "gemini-3.5-flash",
   temperature: 0.15
 };
 
+// La página llama a TU proxy; el proxy le agrega la clave (oculta) y reenvía
+// la petición a Gemini, devolviendo el stream tal cual.
 function geminiStreamURL() {
-  const m = encodeURIComponent(GEMINI.model);
-  const k = encodeURIComponent(GEMINI.apiKey);
-  if (GEMINI.mode === 'studio') {
-    return `https://generativelanguage.googleapis.com/v1beta/models/${m}:streamGenerateContent?alt=sse&key=${k}`;
-  }
-  // Vertex AI Express Mode (claves "AQ.")
-  return `https://aiplatform.googleapis.com/v1/publishers/google/models/${m}:streamGenerateContent?alt=sse&key=${k}`;
+  return `${GEMINI.proxyURL}?model=${encodeURIComponent(GEMINI.model)}`;
 }
 
 // Persona del tutor: se lee como texto crudo del <script type="text/plain">.
@@ -2287,6 +2279,11 @@ async function ejecutarStreaming(payload) {
   };
 
   try {
+    if (!GEMINI.proxyURL || GEMINI.proxyURL.includes('TU-WORKER') || GEMINI.proxyURL.includes('TU-SUBDOMINIO')) {
+      clearTimeout(timeoutId);
+      mostrarError('⚠️ Falta poner la URL de tu proxy. Abre <code>index.html</code> y escribe la URL de tu Worker de Cloudflare en <b>GEMINI.proxyURL</b>.');
+      return;
+    }
     const res = await fetch(geminiStreamURL(), {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2376,7 +2373,7 @@ async function ejecutarStreaming(payload) {
     mostrarError(
       esTimeout
         ? '⚠️ La respuesta tardó demasiado. Revisa tu conexión o inténtalo de nuevo.'
-        : '⚠️ Error de conexión con Gemini. Si es la primera vez, puede ser un bloqueo CORS de la clave Vertex (AQ.): saca una clave gratis en https://aistudio.google.com/apikey y pon GEMINI.mode = "studio". Mira detalles en la consola (F12).'
+        : '⚠️ No se pudo conectar con el proxy. Revisa que GEMINI.proxyURL sea correcta, que el Worker esté publicado en Cloudflare y que tu dominio de GitHub esté en ALLOWED_ORIGINS del Worker. Detalles en la consola (F12).'
     );
     console.error('Error en streaming Gemini:', err);
   } finally {
