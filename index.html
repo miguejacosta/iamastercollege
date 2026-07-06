@@ -497,13 +497,13 @@ header, #sidebar, #input-area, #preview_container, #math-keyboard,
 .btn-font:hover { background: var(--cyan-soft); color: var(--text-main); }
 .sidebar-credit { font-size: 10px; color: var(--text-muted); opacity: 0.75; }
 
-/* Scrim móvil */
+/* Scrim móvil — z-index MENOR que el sidebar (40) y dentro de .app-frame */
 #scrim {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.5);
-  z-index: 35;
+  z-index: 30;
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -1542,9 +1542,13 @@ header {
 
 <div id="offline-banner" role="status">📡 Sin conexión a internet — revisa tu red</div>
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="scrim" onclick="cerrarSidebar()"></div>
 
 <div class="app-frame">
+
+<!-- El scrim DEBE vivir dentro de .app-frame: si se pone fuera, el contexto
+     de apilamiento del marco (z-index:1) deja la sombra ENCIMA del sidebar
+     y en celulares los toques al panel los captura la sombra. -->
+<div id="scrim" onclick="cerrarSidebar()"></div>
 
 <!-- ════════════════ SIDEBAR ════════════════ -->
 <aside id="sidebar" aria-label="Panel de conversaciones">
