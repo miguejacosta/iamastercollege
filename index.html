@@ -2,18 +2,20 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="Tutor MJD — Tu tutor de matemáticas con inteligencia artificial">
-<meta name="theme-color" content="#0d1b2a">
-<title>Tutor MJD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Tutor MJA — Tu tutor de matemáticas con inteligencia artificial">
+<meta name="theme-color" content="#060b16">
+<title>Tutor MJA</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="14" rx="4" fill="%23f0c040"/><circle cx="10" cy="12" r="2.5" fill="%23060b16"/><circle cx="18" cy="12" r="2.5" fill="%23060b16"/><path d="M10 16.5 Q14 19 18 16.5" stroke="%23060b16" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg>'>
 
 <!-- ════════════════════════════════════════════════════════════════
-     [NUEVO] Aplicar tema ANTES de pintar CSS — evita "flashazo"
+     Aplicar tema ANTES de pintar CSS — evita "flashazo"
+     (migra automáticamente la preferencia guardada del viejo MJD)
      ──────────────────────────────────────────────────────────────── -->
 <script>
 (function() {
   try {
-    var saved = localStorage.getItem('tutor_mjd_tema_v1');
+    var saved = localStorage.getItem('tutor_mja_tema_v1') || localStorage.getItem('tutor_mjd_tema_v1');
     var theme;
     if (saved === 'light' || saved === 'dark') {
       theme = saved;
@@ -43,97 +45,127 @@ window.MathJax = {
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 /* ════════════════════════════════════════════════════════════════
-   ── VARIABLES DE DISEÑO ──
-   Tema oscuro (default + cuando data-theme="dark")
+   ── VARIABLES DE DISEÑO ── Tema oscuro (default)
    ──────────────────────────────────────────────────────────────── */
 :root,
 :root[data-theme="dark"] {
-  --bg-deep:     #0d1b2a;
-  --bg-card:     #112236;
-  --bg-input:    #0a1520;
-  --accent:      #f0c040;
-  --accent-soft: rgba(240,192,64,0.12);
-  --accent-glow: rgba(240,192,64,0.25);
-  --blue-bright: #4ab3f4;
-  --blue-soft:   rgba(74,179,244,0.12);
-  --text-main:   #e8edf2;
-  --text-muted:  #7a9bb5;
-  --border:      rgba(74,179,244,0.18);
-  --user-bg:     linear-gradient(135deg, #1a3a5c, #1e4870);
-  --bot-bg:      #112236;
-  --code-bg:     #0a1520;
-  --code-text:   #a8d8f0;
+  --bg-deep:      #060b16;
+  --bg-soft:      #0b1424;
+  --bg-card:      #101d31;
+  --bg-input:    #0a1322;
+  --bg-glass:     rgba(12, 22, 40, 0.82);
+  --accent:       #f0c040;
+  --accent-2:     #ffd76a;
+  --accent-soft:  rgba(240,192,64,0.12);
+  --accent-glow:  rgba(240,192,64,0.28);
+  --cyan:         #4ab3f4;
+  --cyan-soft:    rgba(74,179,244,0.12);
+  --violet:       #8b7cf6;
+  --ok:           #4ade80;
+  --ok-soft:      rgba(74,222,128,0.12);
+  --bad:          #f87171;
+  --bad-soft:     rgba(248,113,113,0.12);
+  --text-main:    #e9eef5;
+  --text-muted:   #8aa3bb;
+  --border:       rgba(122,162,210,0.16);
+  --border-hi:    rgba(240,192,64,0.45);
+  --user-bg:      linear-gradient(135deg, #16375c, #1d4a78);
+  --bot-bg:       #101d31;
+  --code-bg:      #0a1322;
+  --code-text:    #a8d8f0;
   --particle-opacity: 1;
-  --radius-lg:   16px;
-  --radius-md:   10px;
-  --radius-sm:   6px;
-  --font-main:   'Space Grotesk', sans-serif;
-  --font-mono:   'JetBrains Mono', monospace;
-  --shadow:      0 4px 24px rgba(0,0,0,0.4);
-  --max-app:     860px;
+  --aurora-opacity:   1;
+  --radius-lg:    18px;
+  --radius-md:    12px;
+  --radius-sm:    8px;
+  --font-main:    'Space Grotesk', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --shadow:       0 6px 28px rgba(0,0,0,0.42);
+  --shadow-soft:  0 2px 12px rgba(0,0,0,0.30);
+  --chat-fs:      15px;
+  --sidebar-w:    282px;
+  --max-app:      1360px;
 }
 
-/* ════════════════════════════════════════════════════════════════
-   ── [NUEVO] TEMA CLARO ESTILO "PAPEL" ──
-   Mantiene la identidad gold del tutor pero adaptada a fondo claro
-   ──────────────────────────────────────────────────────────────── */
+/* ── Tema claro estilo "papel" ── */
 :root[data-theme="light"] {
-  --bg-deep:     #f5efe3;
-  --bg-card:     #ffffff;
+  --bg-deep:      #f4eee1;
+  --bg-soft:      #efe7d5;
+  --bg-card:      #ffffff;
   --bg-input:    #faf6ec;
-  --accent:      #b8841a;
-  --accent-soft: rgba(184,132,26,0.10);
-  --accent-glow: rgba(184,132,26,0.22);
-  --blue-bright: #1565c0;
-  --blue-soft:   rgba(21,101,192,0.08);
-  --text-main:   #1a2332;
-  --text-muted:  #5a6b7d;
-  --border:      rgba(21,101,192,0.18);
-  --user-bg:     linear-gradient(135deg, #d4e4f5, #e8f1fc);
-  --bot-bg:      #ffffff;
-  --code-bg:     #f4ecdc;
-  --code-text:   #1565c0;
-  --particle-opacity: 0.55;
-  --shadow:      0 4px 16px rgba(60, 80, 110, 0.10);
+  --bg-glass:     rgba(255, 253, 246, 0.86);
+  --accent:       #b8841a;
+  --accent-2:     #96690e;
+  --accent-soft:  rgba(184,132,26,0.10);
+  --accent-glow:  rgba(184,132,26,0.24);
+  --cyan:         #1565c0;
+  --cyan-soft:    rgba(21,101,192,0.08);
+  --violet:       #6d5cd3;
+  --ok:           #15803d;
+  --ok-soft:      rgba(21,128,61,0.10);
+  --bad:          #dc2626;
+  --bad-soft:     rgba(220,38,38,0.08);
+  --text-main:    #1a2332;
+  --text-muted:   #5a6b7d;
+  --border:       rgba(21,101,192,0.16);
+  --border-hi:    rgba(184,132,26,0.5);
+  --user-bg:      linear-gradient(135deg, #d4e4f5, #e8f1fc);
+  --bot-bg:       #ffffff;
+  --code-bg:      #f4ecdc;
+  --code-text:    #1565c0;
+  --particle-opacity: 0.5;
+  --aurora-opacity:   0.45;
+  --shadow:       0 6px 20px rgba(60,80,110,0.12);
+  --shadow-soft:  0 2px 10px rgba(60,80,110,0.08);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
 
 body {
   background: var(--bg-deep);
   color: var(--text-main);
   font-family: var(--font-main);
   height: 100dvh;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   position: relative;
-  /* [NUEVO] transición suave al cambiar de tema */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* [NUEVO] transiciones suaves al cambiar de tema en elementos principales */
-header,
-#input-area,
-#preview_container,
-#math-keyboard,
-#mensaje,
-.btn-header,
-.btn-action,
-.btn-copy,
-.msg,
-.msg pre {
-  transition: background-color 0.3s ease,
-              color 0.3s ease,
-              border-color 0.3s ease,
-              box-shadow 0.3s ease;
+/* ── Fondo "aurora" animado (profesional y sutil) ── */
+#aurora {
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--aurora-opacity);
+  background:
+    radial-gradient(38% 34% at 18% 22%, rgba(240,192,64,0.10), transparent 70%),
+    radial-gradient(42% 38% at 82% 12%, rgba(74,179,244,0.10), transparent 70%),
+    radial-gradient(46% 40% at 68% 88%, rgba(139,124,246,0.09), transparent 70%);
+  filter: blur(38px);
+  animation: auroraDrift 26s ease-in-out infinite alternate;
+}
+@keyframes auroraDrift {
+  0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+  50%  { transform: translate3d(2%, 2%, 0)  scale(1.06); }
+  100% { transform: translate3d(-1%, 1%, 0) scale(1.02); }
 }
 
-/* ── [#8] Splash de carga ── */
+/* Transiciones suaves al cambiar de tema */
+header, #sidebar, #input-area, #preview_container, #math-keyboard,
+#mensaje, .btn-header, .btn-action, .btn-copy, .msg, .msg pre,
+.chat-item, .mode-chip, .hero-chip, .modal-card {
+  transition: background-color 0.3s ease, color 0.3s ease,
+              border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ── Splash de carga ── */
 #splash {
   position: fixed;
   inset: 0;
@@ -144,32 +176,33 @@ header,
   align-items: center;
   justify-content: center;
   gap: 18px;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  transition: opacity 0.45s ease, visibility 0.45s ease;
 }
-#splash.hide {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
+#splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
 #splash .splash-logo {
-  width: 72px; height: 72px;
+  width: 84px; height: 84px;
   background: var(--accent-soft);
   border: 2px solid var(--accent);
-  border-radius: 18px;
+  border-radius: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   animation: pulse-splash 1.6s ease-in-out infinite;
 }
 @keyframes pulse-splash {
-  0%,100% { transform: scale(1); box-shadow: 0 0 0 0 var(--accent-glow); }
-  50%     { transform: scale(1.06); box-shadow: 0 0 20px 4px var(--accent-glow); }
+  0%,100% { transform: scale(1);    box-shadow: 0 0 0 0 var(--accent-glow); }
+  50%     { transform: scale(1.06); box-shadow: 0 0 26px 6px var(--accent-glow); }
 }
 #splash .splash-text {
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
+#splash .splash-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: -10px; }
 #splash .splash-dots span {
   display: inline-block;
   width: 6px; height: 6px;
@@ -181,14 +214,13 @@ header,
 #splash .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
 #splash .splash-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-/* ── Partículas de fondo ── */
+/* ── Partículas matemáticas de fondo ── */
 .particles {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
-  /* [NUEVO] opacidad global ajustable por tema */
   opacity: var(--particle-opacity);
 }
 .particle {
@@ -201,16 +233,36 @@ header,
   user-select: none;
 }
 @keyframes floatUp {
-  0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
-  15%  { opacity: 0.18; }
-  80%  { opacity: 0.10; }
-  100% { opacity: 0; transform: translateY(-100vh) rotate(20deg); }
+  0%   { opacity: 0;    transform: translateY(0) rotate(0deg); }
+  15%  { opacity: 0.16; }
+  80%  { opacity: 0.09; }
+  100% { opacity: 0;    transform: translateY(-100vh) rotate(20deg); }
 }
 
-/* ── [#3] Contenedor máximo para desktop ── */
-.app-shell {
+/* ── Banner sin conexión ── */
+#offline-banner {
+  display: none;
+  position: fixed;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  z-index: 5000;
+  background: var(--bad);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: var(--shadow-soft);
+  align-items: center;
+  gap: 8px;
+}
+#offline-banner.show { display: flex; }
+
+/* ════════════════════════════════════════════════════════════════
+   ── LAYOUT PRINCIPAL: sidebar + columna de chat ──
+   ──────────────────────────────────────────────────────────────── */
+.app-frame {
   display: flex;
-  flex-direction: column;
   height: 100dvh;
   width: 100%;
   max-width: var(--max-app);
@@ -218,34 +270,235 @@ header,
   position: relative;
   z-index: 1;
 }
-@media (min-width: 900px) {
-  .app-shell {
+@media (min-width: 1380px) {
+  .app-frame {
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
-    box-shadow: 0 0 60px rgba(0,0,0,0.5);
   }
 }
-/* [NUEVO] en modo claro sombra más suave */
-:root[data-theme="light"] .app-shell {
-  box-shadow: 0 0 30px rgba(60, 80, 110, 0.08);
+
+/* ── Sidebar ── */
+#sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid var(--border);
+  z-index: 40;
+  transition: transform 0.28s ease;
+}
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 12px;
+}
+.sidebar-brand .mini-logo {
+  width: 34px; height: 34px;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-brand .mini-logo svg { width: 22px; height: 22px; }
+.sidebar-brand b { font-size: 0.98rem; letter-spacing: 0.02em; }
+.sidebar-brand small { display: block; font-size: 0.68rem; color: var(--text-muted); }
+
+.btn-new-chat {
+  margin: 4px 14px 10px;
+  padding: 10px 14px;
+  border: 1px dashed var(--border-hi);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.12s;
+}
+.btn-new-chat:hover  { background: var(--accent-glow); }
+.btn-new-chat:active { transform: scale(0.97); }
+
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 18px 6px;
+}
+
+#chat-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#chat-list::-webkit-scrollbar { width: 4px; }
+#chat-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-muted);
+  user-select: none;
+}
+.chat-item:hover { background: var(--cyan-soft); color: var(--text-main); }
+.chat-item.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-glow);
+  color: var(--text-main);
+}
+.chat-item .ci-icon { flex-shrink: 0; font-size: 13px; opacity: 0.8; }
+.chat-item .ci-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-item .ci-del {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+.chat-item:hover .ci-del { opacity: 0.85; }
+.chat-item .ci-del:hover { color: var(--bad); }
+.chat-list-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 14px 10px;
+  opacity: 0.8;
+}
+
+/* ── Tarjeta de progreso (XP / racha) ── */
+#stats-card {
+  margin: 8px 14px;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+#stats-card .st-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-bottom: 7px;
+}
+#stats-card .st-nivel { font-weight: 700; color: var(--accent); }
+#stats-card .st-racha { color: var(--text-muted); }
+.xp-bar {
+  height: 7px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.xp-bar > div {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  border-radius: 6px;
+  transition: width 0.6s ease;
+}
+#stats-card .st-detalle {
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ── Pie del sidebar ── */
+.sidebar-footer {
+  border-top: 1px solid var(--border);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.font-controls { display: flex; gap: 6px; }
+.btn-font {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 12px;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-font:hover { background: var(--cyan-soft); color: var(--text-main); }
+.sidebar-credit { font-size: 10px; color: var(--text-muted); opacity: 0.75; }
+
+/* Scrim móvil */
+#scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 35;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+#scrim.show { display: block; opacity: 1; }
+
+/* ── Columna principal ── */
+.main-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
 }
 
 /* ── Header ── */
 header {
   position: relative;
   z-index: 10;
-  background: linear-gradient(180deg, var(--bg-input) 0%, var(--bg-deep) 100%);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  padding: 14px 20px;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-shrink: 0;
 }
-
 .logo-wrap {
-  width: 46px;
-  height: 46px;
+  width: 44px; height: 44px;
   background: var(--accent-soft);
   border: 1.5px solid var(--accent);
   border-radius: 12px;
@@ -260,138 +513,232 @@ header {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(240,192,64,0.2), transparent 70%);
+  background: radial-gradient(circle at 50% 30%, rgba(240,192,64,0.22), transparent 70%);
 }
-.logo-svg { width: 28px; height: 28px; position: relative; z-index: 1; }
+.logo-svg { width: 27px; height: 27px; position: relative; z-index: 1; }
 
 .header-text { flex: 1; min-width: 0; }
 .header-text h1 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text-main);
-  letter-spacing: 0.01em;
+  font-size: 1.14rem;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.header-text h1 .grad {
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .header-text p {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   color: var(--text-muted);
   margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 .status-dot {
   width: 8px; height: 8px;
-  background: #4ade80;
+  background: var(--ok);
   border-radius: 50%;
-  box-shadow: 0 0 8px #4ade80;
+  box-shadow: 0 0 8px var(--ok);
   animation: pulse-dot 2.5s ease-in-out infinite;
   flex-shrink: 0;
 }
 @keyframes pulse-dot {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.6; transform: scale(1.3); }
+  0%,100% { opacity: 1;   transform: scale(1); }
+  50%     { opacity: 0.6; transform: scale(1.3); }
 }
 
-/* ── [#4 y #10] Botones del header ── */
 .header-actions {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
+  position: relative;
 }
 .btn-header {
-  background: rgba(74,179,244,0.1);
-  border: 1px solid rgba(74,179,244,0.2);
+  background: var(--cyan-soft);
+  border: 1px solid var(--border);
   color: var(--text-muted);
-  border-radius: 8px;
-  width: 34px; height: 34px;
+  border-radius: 9px;
+  width: 36px; height: 36px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
-  transition: background 0.2s, color 0.2s;
-  position: relative;
+  transition: background 0.2s, color 0.2s, transform 0.12s;
 }
-.btn-header:hover {
-  background: rgba(74,179,244,0.2);
-  color: var(--text-main);
-}
-.btn-header[title]::after {
-  content: attr(title);
+.btn-header:hover  { background: var(--accent-soft); color: var(--text-main); }
+.btn-header:active { transform: scale(0.93); }
+#btn_tema { color: var(--accent); background: var(--accent-soft); border-color: var(--accent-glow); }
+#btn_menu { display: none; }
+
+/* Menú desplegable de exportación */
+#export-menu {
+  display: none;
   position: absolute;
-  bottom: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1a2d42;
-  color: #e8edf2;
-  font-size: 10px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
+  top: 44px;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  min-width: 190px;
+  z-index: 200;
+  animation: menuIn 0.16s ease;
 }
-.btn-header:hover[title]::after { opacity: 1; }
+#export-menu.open { display: block; }
+@keyframes menuIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+#export-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 13px;
+  padding: 11px 14px;
+  cursor: pointer;
+  text-align: left;
+}
+#export-menu button:hover { background: var(--accent-soft); }
 
-/* [NUEVO] botón de tema con leve realce */
-#btn_tema {
-  color: var(--accent);
-  background: var(--accent-soft);
-  border-color: var(--accent-glow);
-}
-#btn_tema:hover {
-  background: var(--accent-glow);
-  color: var(--accent);
+.escudo-img {
+  height: 40px;
+  width: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-left: 2px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
 }
 
-/* ── Área de chat ── */
+/* ════════════════════════════════════════════════════════════════
+   ── ÁREA DE CHAT ──
+   ──────────────────────────────────────────────────────────────── */
 #chat {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 16px;
+  padding: 20px 18px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   position: relative;
   z-index: 1;
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
-
-#chat::-webkit-scrollbar { width: 4px; }
+#chat::-webkit-scrollbar { width: 5px; }
 #chat::-webkit-scrollbar-track { background: transparent; }
-#chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* ── Burbujas ── */
+/* ── Pantalla de bienvenida (hero) ── */
+#hero {
+  margin: auto;
+  max-width: 620px;
+  width: 100%;
+  text-align: center;
+  padding: 12px 6px 20px;
+  animation: heroIn 0.5s ease both;
+}
+@keyframes heroIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+#hero .hero-logo {
+  width: 88px; height: 88px;
+  margin: 0 auto 14px;
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 40px var(--accent-glow);
+}
+#hero .hero-logo svg { width: 54px; height: 54px; }
+#hero h2 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+#hero h2 .grad {
+  background: linear-gradient(90deg, var(--accent), var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+#hero .hero-sub {
+  color: var(--text-muted);
+  font-size: 0.93rem;
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+.hero-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.hero-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 13px 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-main);
+  color: var(--text-main);
+  font-size: 13px;
+  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.hero-chip:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hi);
+  box-shadow: 0 8px 22px var(--accent-glow);
+  background: var(--accent-soft);
+}
+.hero-chip .hc-icon { font-size: 20px; }
+.hero-chip b { font-size: 13.5px; }
+.hero-chip span { color: var(--text-muted); font-size: 11.5px; }
+
+/* ── Burbujas de mensaje ── */
 .msg {
-  max-width: 88%;
+  max-width: 86%;
   padding: 13px 16px;
   border-radius: var(--radius-lg);
-  font-size: 15px;
+  font-size: var(--chat-fs);
   line-height: 1.55;
   word-wrap: break-word;
-  animation: slideIn 0.25s ease-out both;
+  animation: slideIn 0.28s ease-out both;
   position: relative;
 }
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px) scale(0.99); }
+  to   { opacity: 1; transform: none; }
 }
-
 .msg img { max-width: 100%; border-radius: var(--radius-md); margin-top: 8px; }
 .msg p  { margin: 0 0 8px; }
 .msg p:last-child { margin-bottom: 0; }
 .msg ul, .msg ol { padding-left: 20px; margin: 6px 0; }
 .msg li { margin-bottom: 4px; }
 .msg code {
-  background: var(--blue-soft);
-  color: var(--blue-bright);
+  background: var(--cyan-soft);
+  color: var(--cyan);
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 0.86em;
   padding: 1px 5px;
   border-radius: 4px;
 }
-
-/* ── [#13] Bloques de código con resaltado ── */
 .msg pre {
   background: var(--code-bg);
   border: 1px solid var(--border);
@@ -399,12 +746,10 @@ header {
   padding: 12px 14px;
   margin: 8px 0;
   overflow-x: auto;
-  position: relative;
 }
 .msg pre code {
   background: none;
   color: var(--code-text);
-  font-size: 13px;
   padding: 0;
   line-height: 1.6;
   display: block;
@@ -416,81 +761,83 @@ header {
 .user {
   align-self: flex-end;
   background: var(--user-bg);
-  border: 1px solid rgba(74,179,244,0.2);
-  border-bottom-right-radius: 4px;
-  box-shadow: var(--shadow);
+  border: 1px solid rgba(74,179,244,0.22);
+  border-bottom-right-radius: 5px;
+  box-shadow: var(--shadow-soft);
 }
-
 .bot {
   align-self: flex-start;
   background: var(--bot-bg);
   border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
-  box-shadow: var(--shadow);
+  border-bottom-left-radius: 5px;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Label del emisor */
 .msg-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
-.bot .msg-label  { color: var(--accent); }
-.user .msg-label { color: var(--blue-bright); }
+.msg-label .avatar-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  flex-shrink: 0;
+}
+.bot  .msg-label { color: var(--accent); }
+.bot  .msg-label .avatar-dot { background: var(--accent-soft); border: 1px solid var(--accent-glow); }
+.user .msg-label { color: var(--cyan); justify-content: flex-end; }
+.user .msg-label .avatar-dot { background: var(--cyan-soft); border: 1px solid var(--border); }
 
-/* ── [#5] Timestamps ── */
 .msg-time {
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 6px;
   text-align: right;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
-/* ── [#6] Botón copiar en respuestas del bot ── */
+/* ── Pie con acciones en respuestas del bot ── */
 .msg-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 8px;
   gap: 8px;
+  flex-wrap: wrap;
 }
+.msg-footer .mf-acciones { display: flex; gap: 6px; flex-wrap: wrap; }
 .btn-copy {
-  background: var(--blue-soft);
-  border: 1px solid rgba(74,179,244,0.15);
+  background: var(--cyan-soft);
+  border: 1px solid var(--border);
   color: var(--text-muted);
-  border-radius: 6px;
+  border-radius: 7px;
   padding: 3px 10px;
   font-size: 11px;
   font-family: var(--font-main);
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   transition: background 0.2s, color 0.2s;
-  flex-shrink: 0;
 }
-.btn-copy:hover {
-  background: rgba(74,179,244,0.18);
-  color: var(--text-main);
-}
-.btn-copy.copied {
-  color: #4ade80;
-  border-color: rgba(74,222,128,0.3);
-  background: rgba(74,222,128,0.1);
-}
+.btn-copy:hover { background: var(--accent-soft); color: var(--text-main); }
+.btn-copy.copied { color: var(--ok); border-color: var(--ok-soft); background: var(--ok-soft); }
+.btn-copy.tts-on { color: var(--accent); border-color: var(--accent-glow); background: var(--accent-soft); }
 
-/* ── [#7] Botón de reintentar ── */
 .btn-retry {
   background: var(--accent-soft);
   border: 1px solid var(--accent-glow);
   color: var(--accent);
-  border-radius: 8px;
+  border-radius: 9px;
   padding: 7px 16px;
   font-size: 13px;
   font-family: var(--font-main);
@@ -519,11 +866,143 @@ header {
 .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes bounce {
-  0%,80%,100% { transform: translateY(0); opacity: 0.5; }
-  40%          { transform: translateY(-6px); opacity: 1; }
+  0%,80%,100% { transform: translateY(0);    opacity: 0.5; }
+  40%         { transform: translateY(-6px); opacity: 1; }
 }
 
-/* ── Preview de archivo ── */
+/* ── Gráficas en el chat ── */
+.msg-graph {
+  margin-top: 10px;
+  cursor: zoom-in;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.msg-graph img, .msg-graph svg { width: 100%; max-width: 440px; border-radius: 10px; display: block; }
+.msg-graph:hover { opacity: 0.92; }
+.msg-graph-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Desarrollo vertical: cada $$...$$ como paso destacado ── */
+.msg-body mjx-container[display="true"] {
+  display: block !important;
+  margin: 0.55em auto !important;
+  text-align: center;
+  padding: 8px 10px;
+  border-left: 3px solid var(--accent-glow);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+  overflow-x: auto;
+  overflow-y: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: stepReveal 0.35s ease forwards;
+}
+@keyframes stepReveal { to { opacity: 1; transform: translateY(0); } }
+
+.math-boxed-wrapper mjx-container[display="true"] {
+  background: linear-gradient(135deg, var(--accent-glow), var(--accent-soft));
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+  padding: 10px 14px;
+}
+.math-boxed-wrapper { display: block; margin: 0.2em 0; }
+
+.msg-body .mjd-resultado-final,
+.msg-body .mja-resultado-final {
+  border: 2px solid var(--accent) !important;
+  background: var(--accent-soft) !important;
+  box-shadow: 0 2px 10px var(--accent-glow) !important;
+  padding: 0.5em 1.1em !important;
+  margin: 0.6em 0 !important;
+  border-radius: 10px !important;
+  display: inline-block !important;
+  font-weight: 600 !important;
+}
+
+.msg.bot.streaming .msg-footer { display: none; }
+
+/* ════════════════════════════════════════════════════════════════
+   ── QUIZ INTERACTIVO ──
+   ──────────────────────────────────────────────────────────────── */
+.quiz-card {
+  margin-top: 12px;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  padding: 14px;
+  animation: slideIn 0.3s ease both;
+}
+.quiz-card .qz-head {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.quiz-card .qz-pregunta { font-size: var(--chat-fs); margin-bottom: 12px; line-height: 1.5; }
+.qz-opciones { display: flex; flex-direction: column; gap: 8px; }
+.qz-op {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: calc(var(--chat-fs) - 1px);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  line-height: 1.4;
+}
+.qz-op:hover:not(:disabled) { border-color: var(--border-hi); background: var(--accent-soft); }
+.qz-op:active:not(:disabled) { transform: scale(0.99); }
+.qz-op:disabled { cursor: default; opacity: 0.92; }
+.qz-op .qz-letra {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.qz-op.correcta   { border-color: var(--ok);  background: var(--ok-soft); }
+.qz-op.correcta .qz-letra { background: var(--ok); color: #fff; }
+.qz-op.incorrecta { border-color: var(--bad); background: var(--bad-soft); }
+.qz-op.incorrecta .qz-letra { background: var(--bad); color: #fff; }
+.qz-feedback {
+  margin-top: 10px;
+  font-size: calc(var(--chat-fs) - 1px);
+  border-radius: 9px;
+  padding: 10px 12px;
+  display: none;
+  line-height: 1.5;
+}
+.qz-feedback.show { display: block; animation: slideIn 0.25s ease; }
+.qz-feedback.ok  { background: var(--ok-soft);  border: 1px solid var(--ok); }
+.qz-feedback.bad { background: var(--bad-soft); border: 1px solid var(--bad); }
+
+/* ════════════════════════════════════════════════════════════════
+   ── PREVIEW ARCHIVO / TECLADO MATEMÁTICO / MODOS / INPUT ──
+   ──────────────────────────────────────────────────────────────── */
 #preview_container {
   display: none;
   padding: 10px 16px;
@@ -546,9 +1025,9 @@ header {
   flex: 1;
 }
 .btn-remove {
-  background: rgba(239,68,68,0.2);
-  color: #f87171;
-  border: 1px solid rgba(239,68,68,0.3);
+  background: var(--bad-soft);
+  color: var(--bad);
+  border: 1px solid var(--bad);
   border-radius: 50%;
   width: 26px; height: 26px;
   cursor: pointer;
@@ -557,36 +1036,111 @@ header {
   flex-shrink: 0;
   transition: background 0.2s;
 }
-.btn-remove:hover { background: rgba(239,68,68,0.35); }
-
-/* ── [NUEVO] Pulso al pegar/arrastrar imagen ── */
-#preview_container.pulse {
-  animation: pasteFlash 0.85s ease-out;
-}
+.btn-remove:hover { background: var(--bad); color: #fff; }
+#preview_container.pulse { animation: pasteFlash 0.85s ease-out; }
 @keyframes pasteFlash {
-  0%   { background: var(--accent-soft);  box-shadow: 0 0 0 0   var(--accent-glow); }
-  25%  { background: var(--accent-glow);  box-shadow: 0 0 0 4px var(--accent-glow); }
-  100% { background: var(--accent-soft);  box-shadow: 0 0 0 0   transparent; }
+  0%   { background: var(--accent-soft); box-shadow: 0 0 0 0   var(--accent-glow); }
+  25%  { background: var(--accent-glow); box-shadow: 0 0 0 4px var(--accent-glow); }
+  100% { background: var(--accent-soft); box-shadow: 0 0 0 0   transparent; }
 }
 
-/* ── Área de input ── */
-#input-area {
+#math-keyboard {
+  display: none;
+  padding: 8px 14px;
   background: var(--bg-input);
   border-top: 1px solid var(--border);
-  padding: 12px 14px;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#math-keyboard.open { display: block; }
+#math-keyboard::-webkit-scrollbar { height: 4px; }
+#math-keyboard::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.math-kbd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 34px;
+  padding: 0 10px;
+  margin-right: 5px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  user-select: none;
+  vertical-align: middle;
+}
+.math-kbd-btn:hover  { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.math-kbd-btn:active { transform: scale(0.92); }
+.math-kbd-sep {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  vertical-align: middle;
+  margin: 0 6px;
+}
+
+/* ── Chips de modo de estudio ── */
+#mode-bar {
+  display: flex;
+  gap: 7px;
+  padding: 8px 14px 0;
+  background: var(--bg-input);
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  scrollbar-width: none;
+}
+#mode-bar::-webkit-scrollbar { display: none; }
+.mode-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border-radius: 20px;
+  padding: 5px 13px;
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.mode-chip:hover { color: var(--text-main); border-color: var(--border-hi); }
+.mode-chip.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Barra de entrada ── */
+#input-area {
+  background: var(--bg-input);
+  padding: 10px 14px 12px;
   display: flex;
   gap: 8px;
-  align-items: center;
+  align-items: flex-end;
   position: relative;
   z-index: 2;
   flex-shrink: 0;
 }
-
-/* ── [NUEVO] Estado de drag-over al arrastrar archivo ── */
-#input-area.drag-over {
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
+#input-area.drag-over { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
 #input-area.drag-over::before {
   content: '📎 Suelta la imagen aquí';
   position: absolute;
@@ -609,18 +1163,19 @@ header {
   background: var(--bg-card);
   color: var(--text-main);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 11px 18px;
   font-size: 15px;
   font-family: var(--font-main);
   outline: none;
+  resize: none;
+  max-height: 130px;
+  line-height: 1.45;
+  scrollbar-width: thin;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 #mensaje::placeholder { color: var(--text-muted); }
-#mensaje:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
+#mensaje:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
 .btn-action {
   width: 44px; height: 44px;
@@ -630,220 +1185,36 @@ header {
   display: flex; align-items: center; justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
-  transition: transform 0.15s, background 0.2s;
+  transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
 }
-.btn-action:active { transform: scale(0.92); }
+.btn-action:active   { transform: scale(0.92); }
 .btn-action:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-@media (max-width: 560px) {
-  #input-area {
-    padding: 10px 10px;
-    gap: 6px;
-  }
-  .btn-action {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
-  #mensaje {
-    padding: 10px 14px;
-    font-size: 14px;
-  }
-}
-@media (max-width: 380px) {
-  #input-area {
-    padding: 9px 8px;
-    gap: 5px;
-  }
-  .btn-action {
-    width: 36px;
-    height: 36px;
-    font-size: 15px;
-  }
-  #mensaje {
-    padding: 9px 12px;
-    font-size: 14px;
-  }
-}
-
-.btn-clip {
-  background: rgba(74,179,244,0.15);
-  border: 1px solid rgba(74,179,244,0.3);
-  color: var(--blue-bright);
-}
+.btn-clip   { background: var(--cyan-soft); border: 1px solid var(--border); color: var(--cyan); }
 .btn-clip:hover { background: rgba(74,179,244,0.25); }
-
-.btn-camera {
-  background: rgba(74,222,128,0.12);
-  border: 1px solid rgba(74,222,128,0.25);
-  color: #4ade80;
-}
+.btn-camera { background: var(--ok-soft); border: 1px solid var(--ok); color: var(--ok); }
 .btn-camera:hover { background: rgba(74,222,128,0.22); }
-
-.btn-send {
-  background: var(--accent);
-  color: var(--bg-deep);
+.btn-math-kbd { background: var(--accent-soft); border: 1px solid var(--accent-glow); color: var(--accent); }
+.btn-math-kbd:hover { background: var(--accent-glow); }
+.btn-math-kbd.active { background: var(--accent); color: var(--bg-deep); border-color: var(--accent); }
+.btn-mic { background: var(--bad-soft); border: 1px solid var(--border); color: var(--bad); }
+.btn-mic:hover { background: rgba(248,113,113,0.22); }
+.btn-mic.grabando {
+  background: var(--bad);
+  color: #fff;
+  animation: micPulse 1.1s ease-in-out infinite;
 }
-.btn-send:hover:not(:disabled) { background: var(--accent); filter: brightness(1.1); }
-
-@media (min-width: 680px) {
-  header, #input-area, #preview_container { padding-left: 28px; padding-right: 28px; }
-  #chat { padding: 24px 28px; }
-  .msg { max-width: 75%; }
+@keyframes micPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.55); }
+  50%     { box-shadow: 0 0 0 9px rgba(248,113,113,0); }
 }
-
-#chat { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-
-/* ── Imagen inline en el chat ── */
-.msg-graph {
-  margin-top: 10px;
-  cursor: zoom-in;
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-.msg-graph img {
-  width: 100%;
-  max-width: 420px;
-  border-radius: 10px;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.5);
-  display: block;
-  transition: opacity 0.2s;
-}
-.msg-graph img:hover { opacity: 0.88; }
-.msg-graph-hint {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* ── [2.1] Desarrollo vertical: cada $$...$$ en su propia línea ── */
-.msg-body mjx-container[display="true"] {
-  display: block !important;
-  margin: 0.55em auto 0.55em !important;
-  text-align: center;
-  padding: 8px 10px;
-  border-left: 3px solid var(--accent-glow);
-  border-radius: 0 6px 6px 0;
-  background: var(--accent-soft);
-  overflow-x: auto;
-  overflow-y: hidden;
-  opacity: 0;
-  transform: translateY(6px);
-  animation: stepReveal 0.35s ease forwards;
-}
-
-@keyframes stepReveal {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* [2.2] Resaltado del paso final (respuesta envuelta en \boxed) — vía MathJax nativo */
-.math-boxed-wrapper mjx-container[display="true"] {
-  background: linear-gradient(135deg, var(--accent-glow), var(--accent-soft));
-  border-left: 3px solid var(--accent);
-  box-shadow: 0 0 14px var(--accent-glow);
-  padding: 10px 14px;
-}
-.math-boxed-wrapper {
-  display: block;
-  margin: 0.2em 0;
-}
+.btn-send { background: var(--accent); color: var(--bg-deep); box-shadow: 0 3px 14px var(--accent-glow); }
+.btn-send:hover:not(:disabled) { filter: brightness(1.1); }
+.btn-send.detener { background: var(--bad); color: #fff; box-shadow: 0 3px 14px rgba(248,113,113,0.4); }
 
 /* ════════════════════════════════════════════════════════════════
-   [NUEVO] Override del recuadro del backend (\boxed → <div>)
-   El backend envía inline-styles con tonos azules. Aquí los hacemos
-   adaptables al tema actual usando !important para vencer los inline.
+   ── LIGHTBOX Y MODALES ──
    ──────────────────────────────────────────────────────────────── */
-.msg-body .mjd-resultado-final {
-  border: 2px solid var(--accent) !important;
-  background: var(--accent-soft) !important;
-  box-shadow: 0 2px 10px var(--accent-glow) !important;
-  padding: 0.5em 1.1em !important;
-  margin: 0.6em 0 !important;
-  border-radius: 10px !important;
-  display: inline-block !important;
-  font-weight: 600 !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .msg-body mjx-container[display="true"] {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.msg.bot.streaming .msg-footer { display: none; }
-
-/* ── [4.2] Teclado matemático ── */
-#math-keyboard {
-  display: none;
-  padding: 8px 14px;
-  background: var(--bg-input);
-  border-top: 1px solid var(--border);
-  overflow-x: auto;
-  white-space: nowrap;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-#math-keyboard.open { display: block; }
-#math-keyboard::-webkit-scrollbar { height: 4px; }
-#math-keyboard::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.math-kbd-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 38px;
-  height: 34px;
-  padding: 0 10px;
-  margin-right: 5px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-main);
-  border-radius: 8px;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
-  user-select: none;
-  vertical-align: middle;
-}
-.math-kbd-btn:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.math-kbd-btn:active { transform: scale(0.92); }
-.math-kbd-sep {
-  display: inline-block;
-  width: 1px;
-  height: 20px;
-  background: var(--border);
-  vertical-align: middle;
-  margin: 0 6px;
-}
-
-.btn-math-kbd {
-  background: var(--accent-soft);
-  border: 1px solid var(--accent-glow);
-  color: var(--accent);
-}
-.btn-math-kbd:hover { background: var(--accent-glow); }
-.btn-math-kbd.active {
-  background: var(--accent);
-  color: var(--bg-deep);
-  border-color: var(--accent);
-}
-
-/* ── [#11] Lightbox accesible ── */
 #lightbox {
   display: none;
   position: fixed;
@@ -856,13 +1227,14 @@ header {
   animation: fadeIn 0.2s ease;
 }
 #lightbox.open { display: flex; }
-@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 #lightbox img {
   max-width: 96vw;
   max-height: 82vh;
   border-radius: 12px;
   box-shadow: 0 4px 40px rgba(0,0,0,0.7);
   object-fit: contain;
+  background: #fff;
 }
 #lightbox-bar {
   width: 100%;
@@ -887,38 +1259,303 @@ header {
   transition: background 0.2s;
 }
 #lightbox-back:hover { background: rgba(255,255,255,0.2); }
-#lightbox-title {
-  color: rgba(255,255,255,0.7);
+#lightbox-title { color: rgba(255,255,255,0.7); font-size: 13px; }
+
+/* Modal genérico */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0,0,0,0.55);
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  animation: fadeIn 0.18s ease;
+}
+.modal-overlay.open { display: flex; }
+.modal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 560px;
+  max-height: 88dvh;
+  overflow-y: auto;
+  animation: modalIn 0.22s ease;
+  scrollbar-width: thin;
+}
+@keyframes modalIn { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+  z-index: 2;
+}
+.modal-head b { font-size: 15px; }
+.modal-close {
+  background: var(--cyan-soft);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
   font-size: 13px;
 }
+.modal-close:hover { color: var(--bad); }
+.modal-body { padding: 16px 18px 20px; }
 
+/* Tabs de herramientas */
+.tool-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.tool-tab {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tool-tab.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.tool-pane { display: none; }
+.tool-pane.active { display: block; }
+
+.tool-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.tool-input {
+  flex: 1;
+  min-width: 120px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 10px;
+  padding: 10px 13px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  outline: none;
+}
+.tool-input:focus { border-color: var(--accent); }
+.tool-input.mini { flex: 0 1 90px; min-width: 70px; }
+.tool-btn {
+  background: var(--accent);
+  color: var(--bg-deep);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+.tool-btn:hover  { filter: brightness(1.1); }
+.tool-btn:active { transform: scale(0.97); }
+.tool-btn.sec { background: var(--cyan-soft); color: var(--cyan); border: 1px solid var(--border); }
+.tool-hint { font-size: 11.5px; color: var(--text-muted); margin: 4px 0 10px; line-height: 1.4; }
+#graficadora-out { margin-top: 8px; }
+#graficadora-out svg { width: 100%; height: auto; border-radius: 10px; }
+
+/* Calculadora */
+#calc-display {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 17px;
+  text-align: right;
+  outline: none;
+  margin-bottom: 4px;
+}
+#calc-result {
+  min-height: 24px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 10px;
+  padding-right: 4px;
+  word-break: break-all;
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+}
+.calc-btn {
+  padding: 11px 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: background 0.12s, transform 0.1s;
+}
+.calc-btn:hover  { background: var(--accent-soft); }
+.calc-btn:active { transform: scale(0.94); }
+.calc-btn.op  { color: var(--accent); font-weight: 700; }
+.calc-btn.fn  { color: var(--cyan); font-size: 12.5px; }
+.calc-btn.eq  { background: var(--accent); color: var(--bg-deep); font-weight: 700; }
+.calc-btn.danger { color: var(--bad); }
+
+/* Confirm modal */
+#confirm-text { font-size: 14.5px; line-height: 1.5; margin-bottom: 16px; }
+.confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ════════════════════════════════════════════════════════════════
+   ── RESPONSIVE ──
+   ──────────────────────────────────────────────────────────────── */
+@media (min-width: 760px) {
+  header { padding-left: 24px; padding-right: 24px; }
+  #chat { padding: 24px 28px; }
+  .msg { max-width: 76%; }
+  #input-area, #mode-bar, #preview_container { padding-left: 24px; padding-right: 24px; }
+}
+
+@media (max-width: 999px) {
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    transform: translateX(-105%);
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+  #sidebar.open { transform: translateX(0); }
+  #btn_menu { display: flex; }
+  .escudo-img { height: 34px; }
+}
+
+@media (max-width: 560px) {
+  #input-area { padding: 9px 9px 10px; gap: 6px; }
+  .btn-action { width: 40px; height: 40px; font-size: 16px; }
+  #mensaje { padding: 10px 14px; font-size: 14px; }
+  .header-text p { display: none; }
+  .escudo-img { display: none; }
+  .hero-chips { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 380px) {
+  .btn-action { width: 36px; height: 36px; font-size: 15px; }
+  .hero-chips { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msg-body mjx-container[display="true"] { animation: none; opacity: 1; transform: none; }
+  #aurora, .particle { animation: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ── IMPRESIÓN (Exportar a PDF) ──
+   ──────────────────────────────────────────────────────────────── */
+@media print {
+  body { overflow: visible; height: auto; background: #fff; color: #000; }
+  #aurora, .particles, #sidebar, header, #input-area, #mode-bar,
+  #math-keyboard, #preview_container, #scrim, #splash, #offline-banner,
+  .msg-footer, .btn-retry, #hero { display: none !important; }
+  .app-frame { display: block; max-width: 100%; height: auto; }
+  .main-col { height: auto; display: block; }
+  #chat { overflow: visible; height: auto; display: block; padding: 0; }
+  .msg {
+    max-width: 100%;
+    box-shadow: none;
+    border: 1px solid #ccc;
+    background: #fff !important;
+    color: #000;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+  .msg-body mjx-container[display="true"] { background: #f6f6f6; border-left-color: #999; opacity: 1; transform: none; }
+}
 </style>
 </head>
-
 <body>
 
-<!-- ── [#8] Splash de carga ── -->
-<div id="splash" aria-label="Cargando Tutor MJD">
+<!-- ── Splash de carga ── -->
+<div id="splash" aria-label="Cargando Tutor MJA">
   <div class="splash-logo">
-    <svg width="38" height="38" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="46" height="46" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="4" y="6" width="20" height="14" rx="4" fill="#f0c040" opacity="0.9"/>
       <circle cx="10" cy="12" r="2.5" fill="#0d1b2a"/>
       <circle cx="18" cy="12" r="2.5" fill="#0d1b2a"/>
       <circle cx="11" cy="11" r="0.9" fill="#4ab3f4"/>
       <circle cx="19" cy="11" r="0.9" fill="#4ab3f4"/>
+      <line x1="14" y1="6" x2="14" y2="2" stroke="#f0c040" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="14" cy="2" r="1.5" fill="#4ab3f4"/>
       <path d="M10 16.5 Q14 19 18 16.5" stroke="#0d1b2a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
     </svg>
   </div>
-  <div class="splash-text">Tutor MJD</div>
+  <div class="splash-text">Tutor MJA</div>
+  <div class="splash-sub">Matemáticas · IA · Master College</div>
   <div class="splash-dots"><span></span><span></span><span></span></div>
 </div>
 
+<div id="aurora" aria-hidden="true"></div>
 <div class="particles" aria-hidden="true" id="particles"></div>
 
-<!-- ── [#3] App shell con max-width ── -->
-<div class="app-shell">
+<div id="offline-banner" role="status">📡 Sin conexión a internet — revisa tu red</div>
+<div id="scrim" onclick="cerrarSidebar()"></div>
+
+<div class="app-frame">
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<aside id="sidebar" aria-label="Panel de conversaciones">
+  <div class="sidebar-brand">
+    <div class="mini-logo" aria-hidden="true">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="6" width="20" height="14" rx="4" fill="#f0c040" opacity="0.9"/>
+        <circle cx="10" cy="12" r="2.5" fill="#0d1b2a"/>
+        <circle cx="18" cy="12" r="2.5" fill="#0d1b2a"/>
+        <path d="M10 16.5 Q14 19 18 16.5" stroke="#0d1b2a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <b>Tutor MJA</b>
+      <small>Centro de estudio</small>
+    </div>
+  </div>
+
+  <button class="btn-new-chat" onclick="nuevaConversacion()">＋ Nueva conversación</button>
+
+  <div class="sidebar-label">Conversaciones</div>
+  <div id="chat-list" role="list"></div>
+
+  <div id="stats-card" aria-label="Tu progreso">
+    <div class="st-top">
+      <span class="st-nivel" id="st_nivel">Nivel 1</span>
+      <span class="st-racha" id="st_racha">🔥 0 días</span>
+    </div>
+    <div class="xp-bar"><div id="st_xpbar"></div></div>
+    <div class="st-detalle">
+      <span id="st_xp">0 XP</span>
+      <span id="st_quiz">Quiz: 0/0 ✔</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="font-controls" aria-label="Tamaño de letra">
+      <button class="btn-font" onclick="cambiarFuente(-1)" title="Letra más pequeña" aria-label="Reducir tamaño de letra">A−</button>
+      <button class="btn-font" onclick="cambiarFuente(1)" title="Letra más grande" aria-label="Aumentar tamaño de letra">A＋</button>
+    </div>
+    <span class="sidebar-credit">Master College · MJA</span>
+  </div>
+</aside>
+
+<!-- ════════════════ COLUMNA PRINCIPAL ════════════════ -->
+<div class="main-col">
 
 <header>
+  <button id="btn_menu" class="btn-header" onclick="toggleSidebar()" title="Menú" aria-label="Abrir panel de conversaciones">☰</button>
+
   <div class="logo-wrap" aria-hidden="true">
     <svg class="logo-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="4" y="6" width="20" height="14" rx="4" fill="#f0c040" opacity="0.9"/>
@@ -930,53 +1567,86 @@ header {
       <circle cx="14" cy="2" r="1.5" fill="#4ab3f4"/>
       <path d="M10 16.5 Q14 19 18 16.5" stroke="#0d1b2a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
       <rect x="9" y="20" width="10" height="5" rx="2" fill="#f0c040" opacity="0.7"/>
-      <rect x="9"  y="25" width="3.5" height="2.5" rx="1" fill="#f0c040" opacity="0.5"/>
+      <rect x="9" y="25" width="3.5" height="2.5" rx="1" fill="#f0c040" opacity="0.5"/>
       <rect x="15.5" y="25" width="3.5" height="2.5" rx="1" fill="#f0c040" opacity="0.5"/>
     </svg>
   </div>
+
   <div class="header-text">
-    <h1>Tutor MJD</h1>
-    <p>Tu tutor de matemáticas con IA</p>
+    <h1><span class="grad">Tutor MJA</span></h1>
+    <p>Tu tutor de matemáticas con inteligencia artificial</p>
   </div>
   <div class="status-dot" title="En línea" aria-label="Servicio activo"></div>
 
-  <!-- [#4 y #10] + [NUEVO] Botón de tema -->
   <div class="header-actions">
     <button id="btn_tema" class="btn-header" onclick="toggleTema()" title="Cambiar tema" aria-label="Cambiar entre modo claro y oscuro">🌙</button>
-    <button class="btn-header" onclick="exportarConversacion()" title="Exportar chat" aria-label="Exportar conversación">📥</button>
-    <button class="btn-header" onclick="nuevaConversacion()" title="Nuevo chat" aria-label="Nueva conversación" style="color: var(--accent);">🔄</button>
+    <button class="btn-header" onclick="abrirHerramientas()" title="Herramientas" aria-label="Abrir herramientas: graficadora y calculadora">🧮</button>
+    <button class="btn-header" onclick="toggleExportMenu(event)" title="Exportar chat" aria-label="Exportar conversación">📥</button>
+    <div id="export-menu" role="menu">
+      <button onclick="exportarConversacion('txt')">📄 Exportar como TXT</button>
+      <button onclick="exportarConversacion('md')">📝 Exportar como Markdown</button>
+      <button onclick="exportarPDF()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
   </div>
 
-  <img
-    src="escudo.jpg"
-    alt="Escudo institucional"
-    style="
-      height: 42px;
-      width: auto;
-      border-radius: 8px;
-      object-fit: contain;
-      flex-shrink: 0;
-      margin-left: 4px;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
-    "
-  >
+  <img class="escudo-img" src="escudo.jpg" alt="Escudo institucional" onerror="this.style.display='none'">
 </header>
 
 <main id="chat" role="log" aria-live="polite" aria-label="Conversación con el tutor">
-  <div class="msg bot">
-    <div class="msg-label">🤖 Tutor MJD</div>
-    ¡Hola! Soy Tutor MJD. Puedes escribirme tu duda matemática, tocar el clip (📎) para adjuntar una imagen, tomar una foto con la cámara (📷), o también pegar una imagen directamente en la caja de texto con <b>Ctrl+V</b>. ¡Empecemos!
-    <div class="msg-time" data-ts="init"></div>
+  <div id="hero">
+    <div class="hero-logo" aria-hidden="true">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="6" width="20" height="14" rx="4" fill="#f0c040" opacity="0.9"/>
+        <circle cx="10" cy="12" r="2.5" fill="#0d1b2a"/>
+        <circle cx="18" cy="12" r="2.5" fill="#0d1b2a"/>
+        <circle cx="11" cy="11" r="0.9" fill="#4ab3f4"/>
+        <circle cx="19" cy="11" r="0.9" fill="#4ab3f4"/>
+        <line x1="14" y1="6" x2="14" y2="2" stroke="#f0c040" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="14" cy="2" r="1.5" fill="#4ab3f4"/>
+        <path d="M10 16.5 Q14 19 18 16.5" stroke="#0d1b2a" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h2>¡Hola! Soy <span class="grad">MJA</span> 👋</h2>
+    <p class="hero-sub">
+      Tu tutor de matemáticas con IA. Escríbeme tu duda, adjunta una foto del ejercicio
+      (📎 o Ctrl+V), usa el micrófono 🎤 o toca una de estas ideas para empezar:
+    </p>
+    <div class="hero-chips">
+      <button class="hero-chip" data-prompt="Ayúdame a resolver esta ecuación paso a paso: 3x - 7 = 2x + 5">
+        <span class="hc-icon">🧮</span><b>Resolver una ecuación</b>
+        <span>Paso a paso, con cada línea explicada</span>
+      </button>
+      <button class="hero-chip" data-prompt="Genera una pregunta tipo ICFES de matemáticas de nivel intermedio para practicar, con opciones A, B, C y D.">
+        <span class="hc-icon">🎯</span><b>Practicar ICFES</b>
+        <span>Pregunta interactiva con opciones</span>
+      </button>
+      <button class="hero-chip" data-prompt="Grafícame la función f(x) = x² - 4 y explícame sus raíces.">
+        <span class="hc-icon">📈</span><b>Graficar una función</b>
+        <span>Con raíces e intersecciones marcadas</span>
+      </button>
+      <button class="hero-chip" data-prompt="Explícame el teorema de Pitágoras con un ejemplo de la vida real.">
+        <span class="hc-icon">🧠</span><b>Entender un concepto</b>
+        <span>Con analogías fáciles de recordar</span>
+      </button>
+      <button class="hero-chip" data-prompt="Dame un plan de estudio de matemáticas para esta semana, tengo examen de trigonometría.">
+        <span class="hc-icon">📅</span><b>Plan de estudio</b>
+        <span>Organiza tu semana antes del examen</span>
+      </button>
+      <button class="hero-chip" data-prompt="Ponme un reto matemático corto y divertido de nivel intermedio.">
+        <span class="hc-icon">⚡</span><b>Reto matemático</b>
+        <span>Desafíos cortos para ganar XP</span>
+      </button>
+    </div>
   </div>
 </main>
 
-<!-- ── [#11] Lightbox accesible ── -->
+<!-- ── Lightbox ── -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada de imagen" onclick="cerrarLightbox(event)">
   <div id="lightbox-bar">
     <button id="lightbox-back" onclick="cerrarLightbox()">← Regresar</button>
-    <span id="lightbox-title">Triángulo del ejercicio</span>
+    <span id="lightbox-title">Vista ampliada</span>
   </div>
-  <img id="lightbox-img" src="" alt="Triángulo rectángulo ampliado" />
+  <img id="lightbox-img" src="" alt="Imagen ampliada" />
 </div>
 
 <div id="preview_container" role="status" aria-live="polite">
@@ -984,7 +1654,7 @@ header {
   <button class="btn-remove" onclick="limpiarArchivo()" aria-label="Quitar archivo adjunto">✖</button>
 </div>
 
-<!-- ── [4.2] Teclado matemático ── -->
+<!-- ── Teclado matemático ── -->
 <div id="math-keyboard" role="toolbar" aria-label="Teclado matemático">
   <button class="math-kbd-btn" onclick="insertarSimbolo('√')" title="Raíz cuadrada">√</button>
   <span class="math-kbd-sep"></span>
@@ -999,6 +1669,7 @@ header {
   <button class="math-kbd-btn" onclick="insertarSimbolo('×')" title="Multiplicación">×</button>
   <button class="math-kbd-btn" onclick="insertarSimbolo('÷')" title="División">÷</button>
   <button class="math-kbd-btn" onclick="insertarSimbolo('±')" title="Más-menos">±</button>
+  <button class="math-kbd-btn" onclick="insertarSimbolo('/')" title="Fracción">a/b</button>
   <span class="math-kbd-sep"></span>
   <button class="math-kbd-btn" onclick="insertarSimbolo('≤')" title="Menor o igual">≤</button>
   <button class="math-kbd-btn" onclick="insertarSimbolo('≥')" title="Mayor o igual">≥</button>
@@ -1020,68 +1691,99 @@ header {
   <button class="math-kbd-btn" onclick="insertarSimbolo('∫')" title="Integral">∫</button>
 </div>
 
-<div id="input-area">
-  <input
-    type="file"
-    id="file_input"
-    accept="image/*,application/pdf"
-    style="display:none"
-    aria-label="Adjuntar imagen o PDF"
-    onchange="manejarArchivo()"
-  >
-  <input
-    type="file"
-    id="camera_input"
-    accept="image/*"
-    capture="environment"
-    style="display:none"
-    aria-label="Tomar foto con la cámara"
-    onchange="manejarArchivoCamara()"
-  >
-  <button
-    class="btn-action btn-clip"
-    onclick="document.getElementById('file_input').click()"
-    aria-label="Adjuntar archivo"
-    title="Adjuntar imagen o PDF"
-  >📎</button>
-  <button
-    class="btn-action btn-camera"
-    onclick="document.getElementById('camera_input').click()"
-    aria-label="Tomar foto con la cámara"
-    title="Cámara directa"
-  >📷</button>
-  <button
-    id="btn_math_kbd"
-    class="btn-action btn-math-kbd"
-    onclick="toggleTecladoMatematico()"
-    aria-label="Teclado matemático"
-    title="Símbolos matemáticos"
-  >∑</button>
-  <input
-    type="text"
-    id="mensaje"
-    placeholder="Escribe tu duda aquí (o pega una imagen con Ctrl+V)..."
-    autocomplete="off"
-    aria-label="Escribe tu pregunta de matemáticas"
-  >
-  <button
-    id="btn_enviar"
-    class="btn-action btn-send"
-    onclick="enviarMensaje()"
-    aria-label="Enviar mensaje"
-    title="Enviar"
-  >➤</button>
+<!-- ── Modos de estudio ── -->
+<div id="mode-bar" role="toolbar" aria-label="Modo de estudio">
+  <button class="mode-chip active" data-modo="tutor"    onclick="setModo('tutor', this)">📚 Tutor</button>
+  <button class="mode-chip" data-modo="icfes"    onclick="setModo('icfes', this)">🎯 Simulacro ICFES</button>
+  <button class="mode-chip" data-modo="concepto" onclick="setModo('concepto', this)">🧠 Conceptos</button>
+  <button class="mode-chip" data-modo="reto"     onclick="setModo('reto', this)">⚡ Reto rápido</button>
 </div>
 
-</div><!-- /.app-shell -->
+<!-- ── Barra de entrada ── -->
+<div id="input-area">
+  <input type="file" id="file_input" accept="image/*,application/pdf" style="display:none"
+         aria-label="Adjuntar imagen o PDF" onchange="manejarArchivo()">
+  <input type="file" id="camera_input" accept="image/*" capture="environment" style="display:none"
+         aria-label="Tomar foto con la cámara" onchange="manejarArchivoCamara()">
+
+  <button class="btn-action btn-clip" onclick="document.getElementById('file_input').click()"
+          aria-label="Adjuntar archivo" title="Adjuntar imagen o PDF">📎</button>
+  <button class="btn-action btn-camera" onclick="document.getElementById('camera_input').click()"
+          aria-label="Tomar foto con la cámara" title="Cámara directa">📷</button>
+  <button id="btn_math_kbd" class="btn-action btn-math-kbd" onclick="toggleTecladoMatematico()"
+          aria-label="Teclado matemático" title="Símbolos matemáticos">∑</button>
+  <button id="btn_mic" class="btn-action btn-mic" onclick="toggleDictado()"
+          aria-label="Dictar por voz" title="Dictar tu pregunta por voz">🎤</button>
+
+  <textarea id="mensaje" rows="1"
+            placeholder="Escribe tu duda aquí… (Enter envía, Shift+Enter salto de línea)"
+            autocomplete="off"
+            aria-label="Escribe tu pregunta de matemáticas"></textarea>
+
+  <button id="btn_enviar" class="btn-action btn-send" onclick="accionEnviar()"
+          aria-label="Enviar mensaje" title="Enviar">➤</button>
+</div>
+
+</div><!-- /.main-col -->
+</div><!-- /.app-frame -->
+
+<!-- ── Modal de herramientas: graficadora + calculadora ── -->
+<div class="modal-overlay" id="tools-modal" role="dialog" aria-modal="true" aria-label="Herramientas matemáticas">
+  <div class="modal-card">
+    <div class="modal-head">
+      <b>🧰 Herramientas matemáticas</b>
+      <button class="modal-close" onclick="cerrarHerramientas()" aria-label="Cerrar herramientas">✖</button>
+    </div>
+    <div class="modal-body">
+      <div class="tool-tabs">
+        <button class="tool-tab active" id="tab-graf" onclick="setToolTab('graf')">📈 Graficadora</button>
+        <button class="tool-tab" id="tab-calc" onclick="setToolTab('calc')">🧮 Calculadora</button>
+      </div>
+
+      <div class="tool-pane active" id="pane-graf">
+        <div class="tool-row">
+          <input class="tool-input" id="gr_expr" placeholder="f(x) =  ej: x**2 - 4  ·  sin(x)  ·  2*x+3" value="x**2 - 4">
+        </div>
+        <div class="tool-row">
+          <input class="tool-input mini" id="gr_xmin" placeholder="x mín" value="-5">
+          <input class="tool-input mini" id="gr_xmax" placeholder="x máx" value="5">
+          <button class="tool-btn" onclick="graficarLocal()">Graficar</button>
+          <button class="tool-btn sec" onclick="preguntarSobreFuncion()">Preguntar a MJA</button>
+        </div>
+        <p class="tool-hint">
+          Sintaxis: <code>**</code> potencia · <code>sin, cos, tan, sqrt, log, ln, exp, abs</code> ·
+          constantes <code>pi</code> y <code>e</code>. La gráfica se dibuja al instante, sin gastar la IA.
+        </p>
+        <div id="graficadora-out" aria-live="polite"></div>
+      </div>
+
+      <div class="tool-pane" id="pane-calc">
+        <input id="calc-display" placeholder="Escribe una operación… ej: sqrt(144) + 3^2" aria-label="Pantalla de la calculadora">
+        <div id="calc-result" aria-live="polite"></div>
+        <div class="calc-grid" id="calc-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal de confirmación ── -->
+<div class="modal-overlay" id="confirm-modal" role="alertdialog" aria-modal="true">
+  <div class="modal-card" style="max-width:400px">
+    <div class="modal-body">
+      <div id="confirm-text">¿Confirmas esta acción?</div>
+      <div class="confirm-actions">
+        <button class="tool-btn sec" id="confirm-no">Cancelar</button>
+        <button class="tool-btn" id="confirm-si">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════════════════════════════════
-     PROMPT / PERSONA DEL TUTOR  (antes vivía en mani.py como PROMPT_BASE)
-     Se guarda como texto crudo (type="text/plain") para que los \ y $
-     de LaTeX no choquen con los escapes de JavaScript.
+     PROMPT / PERSONA DEL TUTOR (texto crudo para no chocar con JS)
      ──────────────────────────────────────────────────────────────── -->
 <script type="text/plain" id="prompt-base">
-Te llamas "MJD". Eres un tutor académico cercano y experto, especializado en matemáticas pero capaz de acompañar al estudiante de secundaria en todo su proceso de aprendizaje. Tu misión NO es darle respuestas masticadas; es GUIARLO para que entienda, razone y crezca. Sé sintético para que no se aburra.
+Te llamas "MJA". Eres un tutor académico cercano y experto, especializado en matemáticas pero capaz de acompañar al estudiante de secundaria en todo su proceso de aprendizaje. Tu misión NO es darle respuestas masticadas; es GUIARLO para que entienda, razone y crezca. Sé sintético para que no se aburra.
 
 ══════════════════════════════════════════════
  PERSONALIDAD
@@ -1125,6 +1827,7 @@ RESTRICCIÓN CLAVE: No repitas tu presentación ni tus capacidades en cada mensa
 - SIEMPRE usa formato LaTeX ($x=2$ o $$x=2$$).
 - CRÍTICO: El símbolo de porcentaje DEBE ir SIEMPRE escapado con barra invertida. Escribe $50\%$ (NUNCA $50%$).
 - Cero condescendencia. Trata al estudiante como alguien capaz.
+- NUNCA escribas etiquetas HTML (<div>, <img>, <script>, etc.) en tus respuestas. Solo texto, Markdown simple y LaTeX.
 
 ══════════════════════════════════════════════
  FORMATO DE PROCEDIMIENTOS — DESARROLLO VERTICAL OBLIGATORIO
@@ -1247,157 +1950,111 @@ Tienes la capacidad de generar gráficas visuales para el estudiante. Usa estas 
      tan(x), sqrt(x), log(x), exp(x), abs(x), pi.
    - Escoge un rango xmin/xmax apropiado para que se vea bien la función.
 
-REGLAS DE LAS GRÁFICAS:
-- NO menciones la etiqueta [[GRAFICA:...]] ni [[FUNCION:...]] al estudiante. Es invisible para él.
+3) QUIZ INTERACTIVO (opción múltiple con botones):
+   Cuando el estudiante pida practicar, un simulacro, un quiz, un reto de opción
+   múltiple o una pregunta tipo ICFES PARA RESPONDER, incluye AL FINAL de tu
+   respuesta (en una línea sola) esta etiqueta:
+
+   [[QUIZ:pregunta=TEXTO|opA=TEXTO|opB=TEXTO|opC=TEXTO|opD=TEXTO|correcta=LETRA|explicacion=TEXTO]]
+
+   Ejemplo:
+   [[QUIZ:pregunta=Si $2x+4=10$, ¿cuánto vale $x$?|opA=$x=2$|opB=$x=3$|opC=$x=5$|opD=$x=7$|correcta=B|explicacion=Se resta $4$ a ambos lados y queda $2x=6$, luego se divide entre $2$ y $x=3$.]]
+
+   REGLAS DEL QUIZ:
+   - TODO en UNA sola línea. El separador entre campos es la barra vertical |.
+   - NUNCA uses la barra | ni corchetes ]] DENTRO de los textos.
+   - correcta= solo la letra A, B, C o D.
+   - Puedes usar LaTeX con $...$ dentro de los textos del quiz.
+   - En tu texto visible presenta el contexto/tema brevemente, pero NO repitas
+     la pregunta ni las opciones fuera de la etiqueta (la app las mostrará como
+     botones interactivos).
+   - Después de la etiqueta no escribas nada más.
+
+REGLAS DE LAS ETIQUETAS:
+- NO menciones las etiquetas [[GRAFICA:...]], [[FUNCION:...]] ni [[QUIZ:...]] al estudiante. Son invisibles para él.
 - La etiqueta SIEMPRE va en la ÚLTIMA línea, después de toda tu explicación.
-- Solo genera UNA gráfica por respuesta.
-- NO generes gráficas para saludos ni preguntas conceptuales simples.
+- Solo genera UNA etiqueta por respuesta.
+- NO generes gráficas ni quiz para saludos ni preguntas conceptuales simples.
 - Si el estudiante dice "grafica", "dibuja", "muéstrame la gráfica", "haz el gráfico" → genera la gráfica correspondiente.
 </script>
-
 <script>
 // ════════════════════════════════════════════════════════════════
-//  Configuración: GEMINI DIRECTO desde el navegador (sin backend)
-//  El "cerebro" ahora es Gemini 3.1 Flash Lite, llamado con una API key
-//  gratuita de Google. Ya NO hay servidor Cloud Run / mani.py: TODO corre
-//  como archivos estáticos en GitHub Pages.
+//  Configuración: GEMINI vía proxy de Cloudflare (sin backend propio)
+//  ✅ AQUÍ NO VA NINGUNA CLAVE. La clave vive como "secreto" en el
+//     Worker de Cloudflare. Esta página solo conoce la URL del proxy,
+//     por eso ES SEGURO subirla a GitHub.
 // ════════════════════════════════════════════════════════════════
 const GEMINI = {
-  // ✅ AQUÍ NO VA NINGUNA CLAVE. La clave de Gemini vive ESCONDIDA como
-  //    "secreto" en tu proxy de Cloudflare. Esta página solo conoce la URL
-  //    del proxy, por eso ES SEGURO subirla a GitHub.
-  //
-  //    Pega abajo la URL de TU Worker (la que termina en .workers.dev),
-  //    SIN barra "/" al final. Ej: https://tutor-mjd.miguel.workers.dev
   proxyURL: "https://tutor-mjd.migueljacosta221.workers.dev",
-
-  model:       "gemini-3.1-flash-lite",
+  model:       "gemini-3.5-flash",
   temperature: 0.15
 };
 
-// La página llama a TU proxy; el proxy le agrega la clave (oculta) y reenvía
-// la petición a Gemini, devolviendo el stream tal cual.
 function geminiStreamURL() {
   return `${GEMINI.proxyURL}?model=${encodeURIComponent(GEMINI.model)}`;
 }
 
-// Persona del tutor: se lee como texto crudo del <script type="text/plain">.
+// Persona del tutor (texto crudo del <script type="text/plain">).
 const PROMPT_BASE = (document.getElementById('prompt-base')?.textContent || '').trim();
 
-const MAX_HISTORIAL = 20;
-const FETCH_TIMEOUT_MS = 90000;
-const STORAGE_KEY_HISTORIAL = 'tutor_mjd_historial_v1';
-const STORAGE_KEY_TEMA      = 'tutor_mjd_tema_v1';   // [NUEVO]
+const MAX_HISTORIAL      = 20;      // mensajes enviados al modelo
+const MAX_MSGS_GUARDADOS = 80;      // mensajes guardados por conversación
+const MAX_CHATS          = 30;      // conversaciones guardadas
+const STREAM_IDLE_MS     = 60000;   // corta si el stream se queda mudo 60 s
 
-// ── Estado ───────────────────────────────────────────────────────────
-let historialSesion     = [];
+// ── Claves de almacenamiento (v1 del nuevo MJA) ──
+const K_CHATS = 'tutor_mja_chats_v1';
+const K_TEMA  = 'tutor_mja_tema_v1';
+const K_STATS = 'tutor_mja_stats_v1';
+const K_FS    = 'tutor_mja_fs_v1';
+const K_MODO  = 'tutor_mja_modo_v1';
+const K_VIEJO_HISTORIAL = 'tutor_mjd_historial_v1'; // migración desde MJD
+
+// ── Modos de estudio (ajustan la instrucción del sistema) ──
+const MODOS = {
+  tutor: {
+    nombre: '📚 Tutor',
+    prompt: ''
+  },
+  icfes: {
+    nombre: '🎯 Simulacro ICFES',
+    prompt: 'MODO ACTIVO — SIMULACRO ICFES: El estudiante está practicando para la prueba SABER 11. En cada respuesta genera UNA pregunta tipo ICFES de matemáticas (contexto breve + enunciado) usando SIEMPRE la etiqueta [[QUIZ:...]] al final. Varía el tema y el nivel según cómo le vaya. Si responde una pregunta previa, primero dale retroalimentación breve y luego lanza la siguiente con otra etiqueta [[QUIZ:...]].'
+  },
+  concepto: {
+    nombre: '🧠 Conceptos',
+    prompt: 'MODO ACTIVO — CONCEPTOS: El estudiante quiere ENTENDER ideas, no resolver tareas. Explica el concepto con una analogía de la vida cotidiana colombiana, un mini-ejemplo numérico y cierra con una pregunta de comprensión. Máximo 10 líneas. No resuelvas listas de ejercicios en este modo.'
+  },
+  reto: {
+    nombre: '⚡ Reto rápido',
+    prompt: 'MODO ACTIVO — RETO RÁPIDO: Propón retos matemáticos cortos, entretenidos y resolubles en 1-3 minutos (acertijos numéricos, patrones, cálculo mental, lógica). Usa la etiqueta [[QUIZ:...]] cuando el reto sea de opción múltiple. Si el estudiante resuelve bien, sube un poco la dificultad; si falla, baja un nivel y dale una pista.'
+  }
+};
+
+// ── Estado global ─────────────────────────────────────────────────────
+let chats            = [];      // [{id, titulo, msgs:[{role,content,tags?}], t}]
+let chatActualId     = null;
+let modoActual       = 'tutor';
 let archivoActualBase64 = null;
-let mimeTypeActual      = null;
-let enviando            = false;
-let ultimoPayload       = null;
+let mimeTypeActual   = null;
+let enviando         = false;
+let ultimoPayload    = null;
+let streamController = null;
+let stats            = { xp: 0, racha: 0, ultimoDia: '', quizOk: 0, quizTot: 0 };
 
 // ════════════════════════════════════════════════════════════════
-//  [NUEVO] SISTEMA DE TEMAS
+//  HELPERS BÁSICOS
 // ════════════════════════════════════════════════════════════════
+function $id(id) { return document.getElementById(id); }
 
-/**
- * Aplica un tema al documento y persiste la elección.
- * El ícono del botón muestra SIEMPRE el modo opuesto al actual:
- *   - Si estás en oscuro  → muestra ☀️ (clic = ir a claro)
- *   - Si estás en claro   → muestra 🌙 (clic = ir a oscuro)
- */
-function aplicarTema(tema) {
-  if (tema !== 'light' && tema !== 'dark') tema = 'dark';
-  document.documentElement.setAttribute('data-theme', tema);
-
-  // Actualizar también el theme-color del navegador (barra superior móvil)
-  const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (metaTheme) {
-    metaTheme.setAttribute('content', tema === 'light' ? '#f5efe3' : '#0d1b2a');
-  }
-
-  // Actualizar el ícono del botón
-  const btn = document.getElementById('btn_tema');
-  if (btn) {
-    btn.textContent = (tema === 'dark') ? '☀️' : '🌙';
-    btn.title = (tema === 'dark') ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
-    btn.setAttribute('aria-label', btn.title);
-  }
-
-  // Persistir
-  try { localStorage.setItem(STORAGE_KEY_TEMA, tema); } catch (e) {}
-}
-
-function toggleTema() {
-  const actual = document.documentElement.getAttribute('data-theme') || 'dark';
-  aplicarTema(actual === 'dark' ? 'light' : 'dark');
-}
-
-function cargarTema() {
-  // El tema ya se aplicó en el <script> inline del <head> para evitar flash.
-  // Aquí solo sincronizamos el ícono del botón con el atributo data-theme actual.
-  const actual = document.documentElement.getAttribute('data-theme') || 'dark';
-  aplicarTema(actual);
-}
-
-// ════════════════════════════════════════════════════════════════
-//  Splash + inicialización
-// ════════════════════════════════════════════════════════════════
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('splash').classList.add('hide');
-  }, 600);
-  const tsEl = document.querySelector('.msg-time[data-ts="init"]');
-  if (tsEl) tsEl.textContent = obtenerHora();
-
-  cargarTema();   // [NUEVO] sincronizar ícono del botón con el tema activo
-
-  if (cargarHistorial()) {
-    restaurarMensajesEnDOM();
-  }
-});
-
-// ── [#5] Helper de hora ─────────────────────────────────────────────
 function obtenerHora() {
   return new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
-// ── [#11] Lightbox accesible ────────────────────────────────────────
-let focusAnteriorLightbox = null;
+function hoyISO() { return new Date().toISOString().slice(0, 10); }
 
-function abrirLightbox(imgSrc) {
-  focusAnteriorLightbox = document.activeElement;
-  const lb = document.getElementById('lightbox');
-  document.getElementById('lightbox-img').src = imgSrc;
-  lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('lightbox-back').focus();
-  document.addEventListener('keydown', lightboxKeyHandler);
+function escapeHTML(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-
-function cerrarLightbox(e) {
-  if (e && e.target && e.target !== document.getElementById('lightbox') &&
-      !document.getElementById('lightbox-back').contains(e.target)) return;
-  const lb = document.getElementById('lightbox');
-  lb.classList.remove('open');
-  document.body.style.overflow = '';
-  document.removeEventListener('keydown', lightboxKeyHandler);
-  if (focusAnteriorLightbox) focusAnteriorLightbox.focus();
-}
-
-function lightboxKeyHandler(e) {
-  if (e.key === 'Escape') { cerrarLightbox(); return; }
-  if (e.key === 'Tab') {
-    e.preventDefault();
-    document.getElementById('lightbox-back').focus();
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-//  GRÁFICAS EN EL NAVEGADOR (SVG)
-//  Reemplazan a las que antes dibujaba matplotlib en mani.py. Aquí no hay
-//  Python: el triángulo y la función se dibujan como SVG en el cliente.
-// ════════════════════════════════════════════════════════════════
 
 function escaparXML(s) {
   return String(s)
@@ -1409,12 +2066,518 @@ function svgADataUri(svg) {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
-// Inserta un SVG ya construido como gráfica dentro de la última burbuja bot.
-function insertarGraficaSVG(svg, label) {
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+// ════════════════════════════════════════════════════════════════
+//  PIPELINE MARKDOWN + LATEX (a prueba de HTML inyectado)
+//  1. Se protegen los bloques $...$ / $$...$$
+//  2. Se escapa el HTML del resto (el modelo no puede inyectar tags)
+//  3. Se parsea el Markdown
+//  4. Se restauran los bloques matemáticos (escapados) para MathJax
+// ════════════════════════════════════════════════════════════════
+const RE_MATH = /(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$)/g;
+
+function procesarTextoSeguro(texto) {
+  const bloques = [];
+  const tieneBoxed = [];
+  const protegido = String(texto).replace(RE_MATH, match => {
+    bloques.push(match);
+    tieneBoxed.push(/\\boxed\s*\{/.test(match));
+    return `MATHBLOCK_${bloques.length - 1}_END`;
+  });
+  let html = marked.parse(escapeHTML(protegido));
+  bloques.forEach((bloque, i) => {
+    const seguro = escapeHTML(bloque);
+    const reemplazo = tieneBoxed[i]
+      ? `<span class="math-boxed-wrapper">${seguro}</span>`
+      : seguro;
+    html = html.replace(`MATHBLOCK_${i}_END`, () => reemplazo);
+  });
+  return html;
+}
+
+// Markdown simple y seguro (para mensajes del usuario y streaming parcial).
+function markdownSeguro(texto) {
+  return marked.parse(escapeHTML(String(texto)));
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SISTEMA DE TEMAS
+// ════════════════════════════════════════════════════════════════
+function aplicarTema(tema) {
+  if (tema !== 'light' && tema !== 'dark') tema = 'dark';
+  document.documentElement.setAttribute('data-theme', tema);
+
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute('content', tema === 'light' ? '#f4eee1' : '#060b16');
+
+  const btn = $id('btn_tema');
+  if (btn) {
+    btn.textContent = (tema === 'dark') ? '☀️' : '🌙';
+    btn.title = (tema === 'dark') ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+    btn.setAttribute('aria-label', btn.title);
+  }
+  try { localStorage.setItem(K_TEMA, tema); } catch (e) {}
+}
+
+function toggleTema() {
+  const actual = document.documentElement.getAttribute('data-theme') || 'dark';
+  aplicarTema(actual === 'dark' ? 'light' : 'dark');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TAMAÑO DE LETRA DEL CHAT (A− / A＋)
+// ════════════════════════════════════════════════════════════════
+const TAMANIOS = [13, 14, 15, 16, 18];
+let fsIndex = 2;
+
+function aplicarFuente() {
+  document.documentElement.style.setProperty('--chat-fs', TAMANIOS[fsIndex] + 'px');
+  try { localStorage.setItem(K_FS, String(fsIndex)); } catch (e) {}
+}
+function cambiarFuente(dir) {
+  fsIndex = Math.max(0, Math.min(TAMANIOS.length - 1, fsIndex + dir));
+  aplicarFuente();
+}
+function cargarFuente() {
+  try {
+    const v = parseInt(localStorage.getItem(K_FS), 10);
+    if (!isNaN(v) && v >= 0 && v < TAMANIOS.length) fsIndex = v;
+  } catch (e) {}
+  aplicarFuente();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODOS DE ESTUDIO
+// ════════════════════════════════════════════════════════════════
+function setModo(modo, btn) {
+  if (!MODOS[modo]) modo = 'tutor';
+  modoActual = modo;
+  document.querySelectorAll('.mode-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.modo === modo));
+  try { localStorage.setItem(K_MODO, modo); } catch (e) {}
+  if (btn) $id('mensaje').focus();
+}
+
+function cargarModo() {
+  try {
+    const m = localStorage.getItem(K_MODO);
+    if (m && MODOS[m]) setModo(m, null);
+  } catch (e) {}
+}
+
+// ════════════════════════════════════════════════════════════════
+//  PROGRESO: XP, NIVELES Y RACHA
+// ════════════════════════════════════════════════════════════════
+function cargarStats() {
+  try {
+    const d = JSON.parse(localStorage.getItem(K_STATS) || 'null');
+    if (d && typeof d === 'object') stats = Object.assign(stats, d);
+  } catch (e) {}
+  renderStats();
+}
+function guardarStats() {
+  try { localStorage.setItem(K_STATS, JSON.stringify(stats)); } catch (e) {}
+}
+function addXP(n) {
+  stats.xp = Math.max(0, (stats.xp || 0) + n);
+  guardarStats();
+  renderStats();
+}
+function registrarActividadDiaria() {
+  const hoy = hoyISO();
+  if (stats.ultimoDia === hoy) return;
+  const ayer = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  stats.racha = (stats.ultimoDia === ayer) ? (stats.racha || 0) + 1 : 1;
+  stats.ultimoDia = hoy;
+  guardarStats();
+  renderStats();
+}
+function registrarQuiz(acerto) {
+  stats.quizTot = (stats.quizTot || 0) + 1;
+  if (acerto) stats.quizOk = (stats.quizOk || 0) + 1;
+  guardarStats();
+  addXP(acerto ? 25 : 5);
+}
+function renderStats() {
+  const xp     = stats.xp || 0;
+  const nivel  = Math.floor(xp / 100) + 1;
+  const dentro = xp % 100;
+  $id('st_nivel').textContent = `Nivel ${nivel}`;
+  $id('st_racha').textContent = `🔥 ${stats.racha || 0} día${(stats.racha || 0) === 1 ? '' : 's'}`;
+  $id('st_xpbar').style.width = `${dentro}%`;
+  $id('st_xp').textContent    = `${xp} XP`;
+  $id('st_quiz').textContent  = `Quiz: ${stats.quizOk || 0}/${stats.quizTot || 0} ✔`;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MULTI-CONVERSACIÓN (sidebar)
+// ════════════════════════════════════════════════════════════════
+function persistirChats() {
+  try {
+    const recorte = chats.slice(0, MAX_CHATS).map(c => ({
+      id: c.id, titulo: c.titulo, t: c.t,
+      msgs: c.msgs.slice(-MAX_MSGS_GUARDADOS)
+    }));
+    localStorage.setItem(K_CHATS, JSON.stringify({ lista: recorte, actual: chatActualId }));
+  } catch (e) { console.warn('No se pudo guardar:', e); }
+}
+
+function cargarChats() {
+  try {
+    const data = JSON.parse(localStorage.getItem(K_CHATS) || 'null');
+    if (data && Array.isArray(data.lista) && data.lista.length) {
+      chats = data.lista;
+      chatActualId = data.actual && chats.some(c => c.id === data.actual)
+        ? data.actual : chats[0].id;
+      return;
+    }
+  } catch (e) {}
+
+  // Migración desde el viejo Tutor MJD (una sola conversación)
+  try {
+    const viejo = JSON.parse(localStorage.getItem(K_VIEJO_HISTORIAL) || 'null');
+    if (Array.isArray(viejo) && viejo.length) {
+      const c = { id: uid(), titulo: 'Conversación anterior (MJD)', t: Date.now(), msgs: viejo };
+      chats = [c];
+      chatActualId = c.id;
+      persistirChats();
+      return;
+    }
+  } catch (e) {}
+
+  // Estado inicial: una conversación vacía
+  const c = { id: uid(), titulo: 'Nueva conversación', t: Date.now(), msgs: [] };
+  chats = [c];
+  chatActualId = c.id;
+}
+
+function chatActual() {
+  return chats.find(c => c.id === chatActualId) || null;
+}
+
+function historialParaAPI() {
+  const c = chatActual();
+  if (!c) return [];
+  return c.msgs.slice(-MAX_HISTORIAL).map(m => ({ role: m.role, content: m.content }));
+}
+
+function tituloDesde(texto) {
+  const t = String(texto || '').replace(/\s+/g, ' ').trim();
+  if (!t) return 'Nueva conversación';
+  return t.length > 42 ? t.slice(0, 42) + '…' : t;
+}
+
+function nuevaConversacion() {
+  const actual = chatActual();
+  // Si la conversación actual ya está vacía, solo enfocamos el input.
+  if (actual && actual.msgs.length === 0) {
+    cerrarSidebar();
+    $id('mensaje').focus();
+    return;
+  }
+  const c = { id: uid(), titulo: 'Nueva conversación', t: Date.now(), msgs: [] };
+  chats.unshift(c);
+  if (chats.length > MAX_CHATS) chats = chats.slice(0, MAX_CHATS);
+  chatActualId = c.id;
+  ultimoPayload = null;
+  persistirChats();
+  renderSidebar();
+  renderChatActual();
+  cerrarSidebar();
+  $id('mensaje').focus();
+}
+
+function seleccionarChat(id) {
+  if (id === chatActualId || enviando) { cerrarSidebar(); return; }
+  if (!chats.some(c => c.id === id)) return;
+  chatActualId = id;
+  ultimoPayload = null;
+  persistirChats();
+  renderSidebar();
+  renderChatActual();
+  cerrarSidebar();
+}
+
+function eliminarChat(id, ev) {
+  if (ev) ev.stopPropagation();
+  const c = chats.find(x => x.id === id);
+  if (!c) return;
+  pedirConfirmacion(`¿Eliminar la conversación "<b>${escapeHTML(c.titulo)}</b>"? Esta acción no se puede deshacer.`, () => {
+    chats = chats.filter(x => x.id !== id);
+    if (chats.length === 0) {
+      const nc = { id: uid(), titulo: 'Nueva conversación', t: Date.now(), msgs: [] };
+      chats = [nc];
+      chatActualId = nc.id;
+    } else if (chatActualId === id) {
+      chatActualId = chats[0].id;
+    }
+    persistirChats();
+    renderSidebar();
+    renderChatActual();
+  });
+}
+
+function renombrarChat(id) {
+  const c = chats.find(x => x.id === id);
+  if (!c) return;
+  const nuevo = prompt('Nuevo nombre de la conversación:', c.titulo);
+  if (nuevo && nuevo.trim()) {
+    c.titulo = tituloDesde(nuevo);
+    persistirChats();
+    renderSidebar();
+  }
+}
+
+function renderSidebar() {
+  const list = $id('chat-list');
+  list.innerHTML = '';
+  if (!chats.length) {
+    list.innerHTML = '<div class="chat-list-empty">Aún no hay conversaciones</div>';
+    return;
+  }
+  chats.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'chat-item' + (c.id === chatActualId ? ' active' : '');
+    item.setAttribute('role', 'listitem');
+    item.innerHTML = `
+      <span class="ci-icon">💬</span>
+      <span class="ci-title">${escapeHTML(c.titulo)}</span>
+      <button class="ci-del" title="Eliminar" aria-label="Eliminar conversación">🗑</button>`;
+    item.onclick = () => seleccionarChat(c.id);
+    item.ondblclick = (e) => { e.preventDefault(); renombrarChat(c.id); };
+    item.querySelector('.ci-del').onclick = (e) => eliminarChat(c.id, e);
+    list.appendChild(item);
+  });
+}
+
+// ── Sidebar móvil ──
+function toggleSidebar() {
+  const sb = $id('sidebar');
+  const abierto = sb.classList.toggle('open');
+  $id('scrim').classList.toggle('show', abierto);
+}
+function cerrarSidebar() {
+  $id('sidebar').classList.remove('open');
+  $id('scrim').classList.remove('show');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODAL DE CONFIRMACIÓN (reemplaza a confirm())
+// ════════════════════════════════════════════════════════════════
+let confirmCallback = null;
+function pedirConfirmacion(htmlTexto, onOk) {
+  $id('confirm-text').innerHTML = htmlTexto;
+  confirmCallback = onOk;
+  $id('confirm-modal').classList.add('open');
+  $id('confirm-si').focus();
+}
+function cerrarConfirmacion() {
+  $id('confirm-modal').classList.remove('open');
+  confirmCallback = null;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  RENDER DEL CHAT ACTUAL (restaura mensajes + gráficas + quiz)
+// ════════════════════════════════════════════════════════════════
+let heroEl = null;
+
+function mostrarHeroSiVacio() {
+  const c = chatActual();
+  const chatDiv = $id('chat');
+  if (c && c.msgs.length === 0 && heroEl && !heroEl.parentNode) {
+    chatDiv.appendChild(heroEl);
+  }
+}
+function ocultarHero() {
+  if (heroEl && heroEl.parentNode) heroEl.parentNode.removeChild(heroEl);
+}
+
+function renderChatActual() {
+  const chatDiv = $id('chat');
+  chatDiv.innerHTML = '';
+  const c = chatActual();
+  if (!c || c.msgs.length === 0) {
+    mostrarHeroSiVacio();
+    return;
+  }
+
+  const divsParaMathJax = [];
+  c.msgs.forEach(msg => {
+    if (msg.role === 'user') {
+      agregarMensaje(markdownSeguro(msg.content || ''), 'user', { skipScroll: true });
+    } else {
+      const d = agregarMensaje(procesarTextoSeguro(msg.content || ''), 'bot', { skipScroll: true });
+      divsParaMathJax.push(d);
+      if (msg.tags) {
+        if (msg.tags.grafica) mostrarGraficaEnChat(msg.tags.grafica, d);
+        if (msg.tags.funcion) mostrarFuncionEnChat(msg.tags.funcion, d);
+        if (msg.tags.quiz)    renderQuiz(msg.tags.quiz, d, /*restaurado=*/true);
+      }
+    }
+  });
+
+  if (window.MathJax && MathJax.typesetPromise && divsParaMathJax.length) {
+    MathJax.typesetPromise(divsParaMathJax).then(() => {
+      divsParaMathJax.forEach(aplicarAnimacionPasos);
+    }).catch(() => {});
+  }
+  chatDiv.scrollTop = chatDiv.scrollHeight;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MENSAJES EN EL DOM
+// ════════════════════════════════════════════════════════════════
+function agregarMensaje(htmlContent, clase, opciones = {}) {
+  ocultarHero();
+  const chat = $id('chat');
+  const div  = document.createElement('div');
+  div.className = `msg ${clase}`;
+  if (opciones.esStreaming) div.classList.add('streaming');
+
+  const label = clase === 'bot'
+    ? '<div class="msg-label"><span class="avatar-dot">🤖</span> Tutor MJA</div>'
+    : '<div class="msg-label">Tú <span class="avatar-dot">👤</span></div>';
+
+  let footerHTML = '';
+  const hora = obtenerHora();
+  if (!opciones.esStreaming) {
+    if (clase === 'bot' && !opciones.esError) {
+      footerHTML = `
+        <div class="msg-footer">
+          <span class="msg-time">${hora}</span>
+          <span class="mf-acciones">
+            <button class="btn-copy" onclick="copiarMensaje(this)" aria-label="Copiar respuesta">📋 Copiar</button>
+            <button class="btn-copy" onclick="leerMensaje(this)" aria-label="Escuchar respuesta">🔊 Escuchar</button>
+          </span>
+        </div>`;
+    } else {
+      footerHTML = `<div class="msg-time">${hora}</div>`;
+    }
+  }
+
+  div.innerHTML = label + '<div class="msg-body">' + htmlContent + '</div>' + footerHTML;
+  chat.appendChild(div);
+  if (!opciones.skipScroll) chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  return div;
+}
+
+function copiarMensaje(btn) {
+  const msgBody = btn.closest('.msg').querySelector('.msg-body');
+  const texto = msgBody.innerText || msgBody.textContent;
+  const marcar = () => {
+    btn.classList.add('copied');
+    btn.innerHTML = '✅ Copiado';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '📋 Copiar'; }, 2000);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).then(marcar).catch(() => copiarFallback(texto, marcar));
+  } else {
+    copiarFallback(texto, marcar);
+  }
+}
+function copiarFallback(texto, done) {
+  const ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+  done();
+}
+
+function agregarIndicadorEscritura() {
+  const chat = $id('chat');
+  const div  = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typing-msg';
+  div.innerHTML = `
+    <div class="msg-label"><span class="avatar-dot">🤖</span> Tutor MJA</div>
+    <div class="typing-indicator"><span></span><span></span><span></span></div>`;
+  chat.appendChild(div);
+  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  return div;
+}
+
+function aplicarAnimacionPasos(msgDiv) {
+  const pasos = msgDiv.querySelectorAll('mjx-container[display="true"]');
+  pasos.forEach((el, i) => { el.style.animationDelay = `${i * 120}ms`; });
+}
+
+// Quita botones "Regenerar" de respuestas anteriores (solo la última lo lleva).
+function quitarRegenerarPrevios() {
+  document.querySelectorAll('.btn-regen').forEach(b => b.remove());
+}
+
+function asegurarFooterEnMensaje(msgDiv, conRegenerar) {
+  if (!msgDiv.querySelector('.msg-footer')) {
+    const footer = document.createElement('div');
+    footer.className = 'msg-footer';
+    footer.innerHTML = `
+      <span class="msg-time">${obtenerHora()}</span>
+      <span class="mf-acciones">
+        <button class="btn-copy" onclick="copiarMensaje(this)" aria-label="Copiar respuesta">📋 Copiar</button>
+        <button class="btn-copy" onclick="leerMensaje(this)" aria-label="Escuchar respuesta">🔊 Escuchar</button>
+      </span>`;
+    msgDiv.appendChild(footer);
+  }
+  if (conRegenerar) {
+    quitarRegenerarPrevios();
+    const acciones = msgDiv.querySelector('.mf-acciones');
+    if (acciones && !acciones.querySelector('.btn-regen')) {
+      const b = document.createElement('button');
+      b.className = 'btn-copy btn-regen';
+      b.setAttribute('aria-label', 'Regenerar respuesta');
+      b.innerHTML = '🔄 Regenerar';
+      b.onclick = () => regenerarRespuesta(msgDiv);
+      acciones.appendChild(b);
+    }
+  }
+}
+</script>
+<script>
+// ════════════════════════════════════════════════════════════════
+//  LIGHTBOX
+// ════════════════════════════════════════════════════════════════
+let focusAnteriorLightbox = null;
+
+function abrirLightbox(imgSrc, titulo) {
+  focusAnteriorLightbox = document.activeElement;
+  const lb = $id('lightbox');
+  $id('lightbox-img').src = imgSrc;
+  $id('lightbox-title').textContent = titulo || 'Vista ampliada';
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  $id('lightbox-back').focus();
+  document.addEventListener('keydown', lightboxKeyHandler);
+}
+
+function cerrarLightbox(e) {
+  if (e && e.target && e.target !== $id('lightbox') &&
+      !$id('lightbox-back').contains(e.target)) return;
+  $id('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', lightboxKeyHandler);
+  if (focusAnteriorLightbox) focusAnteriorLightbox.focus();
+}
+
+function lightboxKeyHandler(e) {
+  if (e.key === 'Escape') { cerrarLightbox(); return; }
+  if (e.key === 'Tab') { e.preventDefault(); $id('lightbox-back').focus(); }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  GRÁFICAS EN EL NAVEGADOR (SVG puro, sin backend)
+// ════════════════════════════════════════════════════════════════
+
+// Inserta un SVG como gráfica dentro de una burbuja bot (o la última).
+function insertarGraficaSVG(svg, label, target) {
   if (!svg) return;
-  const chat   = document.getElementById('chat');
-  const ultimo = chat.querySelector('.bot:last-child');
-  if (!ultimo) return;
+  const chat   = $id('chat');
+  const destino = target || chat.querySelector('.bot:last-child');
+  if (!destino) return;
 
   const wrapper = document.createElement('div');
   wrapper.className = 'msg-graph';
@@ -1422,42 +2585,38 @@ function insertarGraficaSVG(svg, label) {
 
   const hint = document.createElement('div');
   hint.className = 'msg-graph-hint';
-  hint.innerHTML = `🔍 ${label}`;
+  hint.textContent = `🔍 ${label}`;
   wrapper.appendChild(hint);
 
-  ultimo.appendChild(wrapper);
-  wrapper.onclick = () => abrirLightbox(svgADataUri(svg));
-  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  destino.appendChild(wrapper);
+  wrapper.onclick = () => abrirLightbox(svgADataUri(svg), label);
+  if (!target) chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
 }
 
-function mostrarGraficaEnChat(params) {
+function mostrarGraficaEnChat(params, target) {
   const svg = svgTriangulo(params);
   const label = params.tipo === 'resultado'
     ? '📐 Triángulo resuelto — toca para ampliar'
     : '📐 Datos del ejercicio — toca para ampliar';
-  insertarGraficaSVG(svg, label);
+  insertarGraficaSVG(svg, label, target);
 }
 
-function mostrarFuncionEnChat(params) {
+function mostrarFuncionEnChat(params, target) {
   const svg = svgFuncion(params);
-  insertarGraficaSVG(svg, '📈 Gráfica generada — toca para ampliar');
+  insertarGraficaSVG(svg, '📈 Gráfica generada — toca para ampliar', target);
 }
 
 // ── Evaluador SEGURO de expresiones (sin eval libre) ──
-// Acepta la sintaxis Python/SymPy que pide el prompt: ** , sin, cos, tan,
-// sqrt, log (natural), ln, exp, abs, pi, e. Valida con lista blanca para
-// no ejecutar nada peligroso.
 function compilarFuncion(expr) {
   if (!expr) return null;
   let s = String(expr).trim().replace(/\^/g, '**');
 
-  // Lista blanca de identificadores permitidos (los compuestos primero).
   const ids = ['asin','acos','atan','sqrt','log10','sinh','cosh','tanh',
                'sin','cos','tan','log','ln','exp','abs','sign','floor','ceil','pi','e','x'];
   let test = s.replace(/\*\*/g, '*');
   for (const id of ids) test = test.split(id).join('');
   if (/[a-zA-Z]/.test(test)) return null;             // identificador no permitido
-  if (!/^[0-9.\s+\-*/()]*$/.test(test)) return null;  // carácter no permitido
+  if (!/^[0-9.\s+\-*/()%,]*$/.test(test)) return null; // carácter no permitido
 
   const js = s
     .replace(/\bpi\b/g, '(Math.PI)')
@@ -1474,7 +2633,7 @@ function compilarFuncion(expr) {
   } catch (e) { return null; }
 }
 
-// ── Triángulo rectángulo en SVG (misma lógica trig que mani.py) ──
+// ── Triángulo rectángulo en SVG ──
 function svgTriangulo(p) {
   let ang = (p.angulo     != null && p.angulo     !== '') ? parseFloat(p.angulo)     : null;
   let opp = (p.opuesto    != null && p.opuesto    !== '') ? parseFloat(p.opuesto)    : null;
@@ -1497,22 +2656,18 @@ function svgTriangulo(p) {
 
   const W = 460, H = 360, pad = 80;
   const sc = Math.min((W - 2 * pad) / adj, (H - 2 * pad) / opp);
-  const ax = pad,            ay = H - pad;            // A (vértice del ángulo θ)
-  const bx = pad + adj * sc, by = H - pad;            // B (ángulo recto)
-  const cx = pad + adj * sc, cy = H - pad - opp * sc; // C
+  const ax = pad,            ay = H - pad;
+  const bx = pad + adj * sc, by = H - pad;
+  const cx = pad + adj * sc, cy = H - pad - opp * sc;
 
-  // Arco del ángulo θ en A (como polilínea, siempre correcto).
   const arcR = Math.max(22, Math.min(adj, opp) * sc * 0.24);
   const arcPts = [];
   for (let i = 0; i <= 24; i++) {
     const t = rad(ang) * i / 24;
     arcPts.push((ax + arcR * Math.cos(t)).toFixed(1) + ',' + (ay - arcR * Math.sin(t)).toFixed(1));
   }
-
-  // Cuadradito del ángulo recto en B.
   const sq = Math.max(12, Math.min(adj, opp) * sc * 0.10);
   const sqPts = [(bx - sq) + ',' + by, (bx - sq) + ',' + (by - sq), bx + ',' + (by - sq)].join(' ');
-
   const txx = ax + arcR * 1.55 * Math.cos(rad(ang / 2));
   const txy = ay - arcR * 1.55 * Math.sin(rad(ang / 2));
   const halo = 'style="paint-order:stroke" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round"';
@@ -1555,13 +2710,12 @@ function svgFuncion(p) {
 
   const fin = ys.filter(v => isFinite(v)).slice().sort((a, b) => a - b);
   if (fin.length === 0) return null;
-  // Recorte por percentiles para que una asíntota no aplaste la curva.
   let ymin = fin[Math.floor(fin.length * 0.02)];
   let ymax = fin[Math.floor(fin.length * 0.98)];
   if (!isFinite(ymin) || !isFinite(ymax) || ymin === ymax) { ymin = fin[0]; ymax = fin[fin.length - 1]; }
   if (ymin === ymax) { ymin -= 1; ymax += 1; }
   const padY = (ymax - ymin) * 0.12; ymin -= padY; ymax += padY;
-  if (ymin > 0) ymin = 0;  // procurar que el eje X quede visible
+  if (ymin > 0) ymin = 0;
   if (ymax < 0) ymax = 0;
 
   const W = 480, H = 360, mL = 48, mR = 18, mT = 42, mB = 34;
@@ -1569,7 +2723,6 @@ function svgFuncion(p) {
   const X = x => mL + (x - xmin) / (xmax - xmin) * pw;
   const Y = y => mT + (ymax - y) / (ymax - ymin) * ph;
 
-  // Trazo de la curva (corta el path en huecos NaN / fuera de rango).
   let d = '', dibujando = false;
   for (let i = 0; i <= N; i++) {
     if (isFinite(ys[i]) && ys[i] >= ymin && ys[i] <= ymax) {
@@ -1578,7 +2731,6 @@ function svgFuncion(p) {
     } else { dibujando = false; }
   }
 
-  // Grilla + ticks numéricos.
   let grilla = '';
   for (let i = 0; i <= 4; i++) {
     const gx = mL + pw * i / 4, vx = xmin + (xmax - xmin) * i / 4;
@@ -1589,13 +2741,10 @@ function svgFuncion(p) {
     grilla += `<text x="${mL - 5}" y="${(gy + 3).toFixed(1)}" text-anchor="end" font-family="sans-serif" font-size="9" fill="#5a6b7d">${(+vy.toFixed(2))}</text>`;
   }
 
-  // Ejes.
   let ejes = '';
   if (ymin <= 0 && ymax >= 0) { const y0 = Y(0); ejes += `<line x1="${mL}" y1="${y0.toFixed(1)}" x2="${W - mR}" y2="${y0.toFixed(1)}" stroke="#2C3E50" stroke-width="1.1"/>`; }
   if (xmin <= 0 && xmax >= 0) { const x0 = X(0); ejes += `<line x1="${x0.toFixed(1)}" y1="${mT}" x2="${x0.toFixed(1)}" y2="${H - mB}" stroke="#2C3E50" stroke-width="1.1"/>`; }
 
-  // Raíces: detecta cruces de signo Y muestras que caen justo en y=0
-  // (p.ej. x**2-4 sobre [-5,5], donde la malla pega exacto en x=±2).
   let marcas = '', nraices = 0;
   const raicesX = [];
   const tol = (xmax - xmin) / N * 0.5;
@@ -1632,12 +2781,275 @@ ${marcas}
 </svg>`;
 }
 
-// ── Partículas matemáticas ───────────────────────────────────────────
-(function crearParticulas() {
+// ════════════════════════════════════════════════════════════════
+//  HERRAMIENTAS: GRAFICADORA LOCAL + CALCULADORA CIENTÍFICA
+// ════════════════════════════════════════════════════════════════
+function abrirHerramientas() {
+  $id('tools-modal').classList.add('open');
+  $id('export-menu').classList.remove('open');
+}
+function cerrarHerramientas() {
+  $id('tools-modal').classList.remove('open');
+}
+function setToolTab(cual) {
+  ['graf', 'calc'].forEach(t => {
+    $id('tab-' + t).classList.toggle('active', t === cual);
+    $id('pane-' + t).classList.toggle('active', t === cual);
+  });
+  if (cual === 'calc') $id('calc-display').focus();
+  else $id('gr_expr').focus();
+}
+
+function graficarLocal() {
+  const expr = $id('gr_expr').value.trim();
+  const xmin = $id('gr_xmin').value.trim();
+  const xmax = $id('gr_xmax').value.trim();
+  const out  = $id('graficadora-out');
+  if (!expr) { out.innerHTML = '<p class="tool-hint">⚠️ Escribe una función primero.</p>'; return; }
+  const svg = svgFuncion({ expr, xmin, xmax, titulo: 'f(x) = ' + expr });
+  if (!svg) {
+    out.innerHTML = '<p class="tool-hint">⚠️ No pude interpretar esa función. Revisa la sintaxis (ej: <code>x**2 - 4</code>, <code>sin(x)</code>).</p>';
+    return;
+  }
+  out.innerHTML = svg;
+}
+
+function preguntarSobreFuncion() {
+  const expr = $id('gr_expr').value.trim();
+  if (!expr) return;
+  cerrarHerramientas();
+  const input = $id('mensaje');
+  input.value = `Explícame la función f(x) = ${expr}: su dominio, raíces y comportamiento. Grafícala.`;
+  enviarMensaje();
+}
+
+// ── Calculadora ──
+const CALC_BOTONES = [
+  ['C', 'danger'], ['(', ''], [')', ''], ['⌫', 'danger'], ['÷', 'op'],
+  ['7', ''], ['8', ''], ['9', ''], ['^', 'op'], ['×', 'op'],
+  ['4', ''], ['5', ''], ['6', ''], ['√', 'fn'], ['−', 'op'],
+  ['1', ''], ['2', ''], ['3', ''], ['π', 'fn'], ['＋', 'op'],
+  ['0', ''], ['.', ''], ['e', 'fn'], ['%', 'fn'], ['=', 'eq'],
+  ['sin', 'fn'], ['cos', 'fn'], ['tan', 'fn'], ['log', 'fn'], ['ln', 'fn']
+];
+
+function construirCalculadora() {
+  const grid = $id('calc-grid');
+  grid.innerHTML = '';
+  CALC_BOTONES.forEach(([txt, cls]) => {
+    const b = document.createElement('button');
+    b.className = 'calc-btn' + (cls ? ' ' + cls : '');
+    b.textContent = txt;
+    b.onclick = () => calcTecla(txt);
+    grid.appendChild(b);
+  });
+  $id('calc-display').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); calcTecla('='); }
+  });
+  $id('calc-display').addEventListener('input', () => { $id('calc-result').textContent = ''; });
+}
+
+function calcTecla(t) {
+  const disp = $id('calc-display');
+  const res  = $id('calc-result');
+  if (t === 'C')  { disp.value = ''; res.textContent = ''; disp.focus(); return; }
+  if (t === '⌫') { disp.value = disp.value.slice(0, -1); disp.focus(); return; }
+  if (t === '=')  { calcEvaluar(); return; }
+  const mapa = { '÷': '/', '×': '*', '−': '-', '＋': '+', '√': 'sqrt(', 'π': 'pi',
+                 'sin': 'sin(', 'cos': 'cos(', 'tan': 'tan(', 'log': 'log(', 'ln': 'ln(', '%': '/100' };
+  disp.value += (mapa[t] !== undefined ? mapa[t] : t);
+  disp.focus();
+}
+
+function calcEvaluar() {
+  const disp = $id('calc-display');
+  const res  = $id('calc-result');
+  const expr = disp.value.trim();
+  if (!expr) return;
+  if (/\bx\b/.test(expr)) {
+    res.textContent = '⚠️ Usa la pestaña Graficadora para funciones con x';
+    return;
+  }
+  const f = compilarFuncion(expr);
+  if (!f) { res.textContent = '⚠️ Expresión no válida'; return; }
+  let v;
+  try { v = f(0); } catch (e) { v = NaN; }
+  if (!isFinite(v)) { res.textContent = '⚠️ Resultado indefinido'; return; }
+  const redondeado = Math.abs(v) < 1e12 ? +v.toPrecision(12) : v;
+  res.textContent = '= ' + redondeado;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  QUIZ INTERACTIVO  [[QUIZ:pregunta=...|opA=...|...|correcta=B|explicacion=...]]
+// ════════════════════════════════════════════════════════════════
+function parseQuizParams(raw) {
+  const q = { opciones: {} };
+  String(raw).split('|').forEach(par => {
+    const i = par.indexOf('=');
+    if (i < 0) return;
+    const k = par.slice(0, i).trim().toLowerCase();
+    const v = par.slice(i + 1).trim();
+    if (k === 'pregunta')          q.pregunta = v;
+    else if (/^op[a-d]$/.test(k))  q.opciones[k.slice(2).toUpperCase()] = v;
+    else if (k === 'correcta')     q.correcta = v.toUpperCase().replace(/[^A-D]/g, '').slice(0, 1);
+    else if (k === 'explicacion')  q.explicacion = v;
+  });
+  const letras = ['A', 'B', 'C', 'D'].filter(L => q.opciones[L]);
+  if (!q.pregunta || letras.length < 2 || !q.correcta || !q.opciones[q.correcta]) return null;
+  q.letras = letras;
+  return q;
+}
+
+function renderQuiz(quizParams, targetDiv, restaurado) {
+  const q = (quizParams && quizParams.letras) ? quizParams : parseQuizParams(quizParams && quizParams.raw ? quizParams.raw : '');
+  if (!q) return;
+
+  const card = document.createElement('div');
+  card.className = 'quiz-card';
+  card.innerHTML = `<div class="qz-head">🎯 Quiz — elige tu respuesta</div>
+    <div class="qz-pregunta">${procesarTextoSeguro(q.pregunta)}</div>
+    <div class="qz-opciones"></div>
+    <div class="qz-feedback"></div>`;
+
+  const opsDiv = card.querySelector('.qz-opciones');
+  const fb     = card.querySelector('.qz-feedback');
+
+  q.letras.forEach(L => {
+    const b = document.createElement('button');
+    b.className = 'qz-op';
+    b.innerHTML = `<span class="qz-letra">${L}</span><span class="qz-txt">${procesarTextoSeguro(q.opciones[L])}</span>`;
+    b.onclick = () => {
+      // Bloquear todas las opciones
+      opsDiv.querySelectorAll('.qz-op').forEach(x => x.disabled = true);
+      const acerto = (L === q.correcta);
+      b.classList.add(acerto ? 'correcta' : 'incorrecta');
+      if (!acerto) {
+        const idx = q.letras.indexOf(q.correcta);
+        const btnOk = opsDiv.querySelectorAll('.qz-op')[idx];
+        if (btnOk) btnOk.classList.add('correcta');
+      }
+      fb.className = 'qz-feedback show ' + (acerto ? 'ok' : 'bad');
+      const encabezado = acerto ? '✅ ¡Correcto! +25 XP' : `❌ Casi. La respuesta era la ${q.correcta}. +5 XP por intentarlo`;
+      fb.innerHTML = `<b>${encabezado}</b>` + (q.explicacion ? '<br>' + procesarTextoSeguro(q.explicacion) : '');
+      registrarQuiz(acerto);
+      if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([fb]).catch(() => {});
+    };
+    opsDiv.appendChild(b);
+  });
+
+  const destino = targetDiv || $id('chat').querySelector('.bot:last-child');
+  if (!destino) return;
+  destino.appendChild(card);
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([card]).catch(() => {});
+  if (!restaurado) {
+    const chat = $id('chat');
+    chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  VOZ: DICTADO (Web Speech API) + LECTURA EN VOZ ALTA
+// ════════════════════════════════════════════════════════════════
+let reconocedor = null;
+let dictando    = false;
+
+function inicializarVoz() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    const btn = $id('btn_mic');
+    if (btn) btn.style.display = 'none';   // navegador sin soporte
+    return;
+  }
+  reconocedor = new SR();
+  reconocedor.lang = 'es-CO';
+  reconocedor.continuous = false;
+  reconocedor.interimResults = true;
+
+  let base = '';
+  reconocedor.onstart = () => {
+    dictando = true;
+    base = $id('mensaje').value ? $id('mensaje').value + ' ' : '';
+    $id('btn_mic').classList.add('grabando');
+  };
+  reconocedor.onresult = (ev) => {
+    let txt = '';
+    for (let i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript;
+    const input = $id('mensaje');
+    input.value = base + txt;
+    autoAjustarTextarea();
+  };
+  reconocedor.onerror = () => detenerDictado();
+  reconocedor.onend   = () => detenerDictado();
+}
+
+function toggleDictado() {
+  if (!reconocedor) return;
+  if (dictando) { reconocedor.stop(); return; }
+  try { reconocedor.start(); } catch (e) {}
+}
+
+function detenerDictado() {
+  dictando = false;
+  const btn = $id('btn_mic');
+  if (btn) btn.classList.remove('grabando');
+}
+
+// ── Lectura en voz alta de una respuesta ──
+let hablando = false;
+
+function textoParaVoz(msgBody) {
+  // Clonar y quitar las fórmulas para que no lea código LaTeX/SVG
+  const clon = msgBody.cloneNode(true);
+  clon.querySelectorAll('mjx-container, .msg-graph, .quiz-card, svg').forEach(n => {
+    const marca = document.createTextNode(' fórmula ');
+    n.parentNode && n.parentNode.replaceChild(marca, n);
+  });
+  return (clon.innerText || clon.textContent || '')
+    .replace(/\$+[^$]*\$+/g, ' fórmula ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function leerMensaje(btn) {
+  if (!('speechSynthesis' in window)) return;
+  if (hablando) {
+    speechSynthesis.cancel();
+    hablando = false;
+    document.querySelectorAll('.btn-copy.tts-on').forEach(b => {
+      b.classList.remove('tts-on');
+      b.innerHTML = '🔊 Escuchar';
+    });
+    return;
+  }
+  const msgBody = btn.closest('.msg').querySelector('.msg-body');
+  const texto = textoParaVoz(msgBody);
+  if (!texto) return;
+
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = 'es-CO';
+  u.rate = 1.02;
+  const voces = speechSynthesis.getVoices();
+  const vozEs = voces.find(v => /^es[-_]/i.test(v.lang));
+  if (vozEs) u.voice = vozEs;
+
+  u.onend = u.onerror = () => {
+    hablando = false;
+    btn.classList.remove('tts-on');
+    btn.innerHTML = '🔊 Escuchar';
+  };
+  hablando = true;
+  btn.classList.add('tts-on');
+  btn.innerHTML = '⏹ Detener';
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+// ── Partículas matemáticas ──
+function crearParticulas() {
   const simbolos = ['∑', 'π', '∫', '√', 'Δ', '∞', 'θ', 'α', 'β', 'λ',
                     'x²', 'f(x)', 'dy/dx', '=', '+', '÷', '×', 'log', 'sin', 'cos'];
-  const container = document.getElementById('particles');
-  simbolos.forEach((sym, i) => {
+  const container = $id('particles');
+  simbolos.forEach(sym => {
     const el = document.createElement('span');
     el.className = 'particle';
     el.textContent = sym;
@@ -1650,113 +3062,14 @@ ${marcas}
     `;
     container.appendChild(el);
   });
-})();
-
-// ── Helpers ───────────────────────────────────────────────────────────
-function agregarMensaje(htmlContent, clase, opciones = {}) {
-  const chat = document.getElementById('chat');
-  const div  = document.createElement('div');
-  div.className = `msg ${clase}`;
-  if (opciones.esStreaming) div.classList.add('streaming');
-
-  const label = clase === 'bot'
-    ? '<div class="msg-label">🤖 Tutor MJD</div>'
-    : '<div class="msg-label">👤 Tú</div>';
-
-  let footerHTML = '';
-  const hora = obtenerHora();
-  if (!opciones.esStreaming) {
-    if (clase === 'bot' && !opciones.esError) {
-      footerHTML = `
-        <div class="msg-footer">
-          <span class="msg-time">${hora}</span>
-          <button class="btn-copy" onclick="copiarMensaje(this)" aria-label="Copiar respuesta">📋 Copiar</button>
-        </div>`;
-    } else {
-      footerHTML = `<div class="msg-time">${hora}</div>`;
-    }
-  }
-
-  div.innerHTML = label + '<div class="msg-body">' + htmlContent + '</div>' + footerHTML;
-  chat.appendChild(div);
-  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
-  return div;
 }
-
-function copiarMensaje(btn) {
-  const msgBody = btn.closest('.msg').querySelector('.msg-body');
-  const texto = msgBody.innerText || msgBody.textContent;
-  navigator.clipboard.writeText(texto).then(() => {
-    btn.classList.add('copied');
-    btn.innerHTML = '✅ Copiado';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = '📋 Copiar';
-    }, 2000);
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = texto;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.classList.add('copied');
-    btn.innerHTML = '✅ Copiado';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = '📋 Copiar';
-    }, 2000);
-  });
-}
-
-function agregarIndicadorEscritura() {
-  const chat = document.getElementById('chat');
-  const div  = document.createElement('div');
-  div.className = 'msg bot';
-  div.id = 'typing-msg';
-  div.innerHTML = `
-    <div class="msg-label">🤖 Tutor MJD</div>
-    <div class="typing-indicator">
-      <span></span><span></span><span></span>
-    </div>`;
-  chat.appendChild(div);
-  chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
-  return div;
-}
-
-function procesarTextoSeguro(texto) {
-  const bloques = [];
-  const tieneBoxed = [];
-  const protegido = texto.replace(/(\$\$[\s\S]*?\$\$|\$[^\$\n]+?\$)/g, match => {
-    bloques.push(match);
-    tieneBoxed.push(/\\boxed\s*\{/.test(match));
-    return `MATHBLOCK_${bloques.length - 1}_END`;
-  });
-  let html = marked.parse(protegido);
-  bloques.forEach((bloque, i) => {
-    const reemplazo = tieneBoxed[i]
-      ? `<span class="math-boxed-wrapper">${bloque}</span>`
-      : bloque;
-    html = html.replace(`MATHBLOCK_${i}_END`, reemplazo);
-  });
-  return html;
-}
-
-function aplicarAnimacionPasos(msgDiv) {
-  const pasos = msgDiv.querySelectorAll('mjx-container[display="true"]');
-  pasos.forEach((el, i) => {
-    el.style.animationDelay = `${i * 120}ms`;
-  });
-}
-
+</script>
+<script>
 // ════════════════════════════════════════════════════════════════
-//  POST-PROCESADO DE LA RESPUESTA  (lo que antes hacía mani.py)
+//  POST-PROCESADO DE LA RESPUESTA DEL MODELO
 //  - quita **negritas**
 //  - parte $$...\Rightarrow...$$ en pasos verticales
-//  - elimina \boxed/\fbox/\framebox y los puntos separadores de miles
-//    que rompen el renderizado de MathJax
+//  - elimina \boxed/\fbox y puntos separadores de miles (rompen MathJax)
 // ════════════════════════════════════════════════════════════════
 function limpiarNegritas(t) {
   return t.replace(/\*\*([^*]+)\*\*/g, '$1');
@@ -1787,10 +3100,9 @@ function postProcesar(t) {
   return sanitizarMat(dividirPasosVerticales(limpiarNegritas(t)));
 }
 
-// Extrae las etiquetas [[GRAFICA:...]] / [[FUNCION:...]] del texto del modelo
-// y devuelve el texto ya limpio + los parámetros (igual que _extraer_tags en mani.py).
+// Extrae [[GRAFICA:...]], [[FUNCION:...]] y [[QUIZ:...]] del texto.
 function extraerTags(texto) {
-  let grafica = null, funcion = null;
+  let grafica = null, funcion = null, quiz = null;
 
   const mTri = texto.match(/\[\[GRAFICA:([^\]]+)\]\]/);
   if (mTri) {
@@ -1818,10 +3130,16 @@ function extraerTags(texto) {
     texto = texto.replace(/\[\[FUNCION:[^\]]+\]\]/, '').trim();
   }
 
-  return { texto, grafica, funcion };
+  const mQuiz = texto.match(/\[\[QUIZ:([\s\S]+?)\]\]/);
+  if (mQuiz) {
+    quiz = parseQuizParams(mQuiz[1]);
+    texto = texto.replace(/\[\[QUIZ:[\s\S]+?\]\]/, '').trim();
+  }
+
+  return { texto, grafica, funcion, quiz };
 }
 
-// Saca el texto de un chunk SSE de Gemini (candidates[].content.parts[].text).
+// Saca el texto de un chunk SSE de Gemini.
 function extraerTextoGemini(ev) {
   try {
     const parts = ev?.candidates?.[0]?.content?.parts;
@@ -1830,396 +3148,335 @@ function extraerTextoGemini(ev) {
   } catch (e) { return ''; }
 }
 
-// Mensaje amable según el código HTTP que devuelva la API.
 function mensajeErrorHTTP(status, detalle) {
   const extra = detalle ? `<br><small style="opacity:.7">${escaparXML(detalle)}</small>` : '';
   if (status === 400) return '⚠️ Petición inválida. Revisa el nombre del modelo (GEMINI.model) o el formato.' + extra;
-  if (status === 401 || status === 403) return '⚠️ La API key fue rechazada. Verifica que la clave y el modo (vertex/studio) coincidan, o que la clave no esté restringida para este dominio.' + extra;
+  if (status === 401 || status === 403) return '⚠️ La API key fue rechazada o el origen no está permitido en el Worker. Verifica ALLOWED_ORIGINS y el secreto GEMINI_API_KEY.' + extra;
   if (status === 404) return '⚠️ Modelo no encontrado. Revisa GEMINI.model.' + extra;
   if (status === 429) return '⏳ Se alcanzó el límite gratuito por ahora. Espera un momento e inténtalo de nuevo.' + extra;
   return `⚠️ El servicio respondió con un error (HTTP ${status}).` + extra;
 }
 
 // ════════════════════════════════════════════════════════════════
-//  MANEJO DE ARCHIVOS — refactorizado para soportar paste y drag
+//  MANEJO DE ARCHIVOS (clip, cámara, paste, drag & drop)
 // ════════════════════════════════════════════════════════════════
-
-function manejarArchivo() {
-  procesarInputArchivo(document.getElementById('file_input'));
-}
-
-function manejarArchivoCamara() {
-  procesarInputArchivo(document.getElementById('camera_input'));
-}
+function manejarArchivo()       { procesarInputArchivo($id('file_input')); }
+function manejarArchivoCamara() { procesarInputArchivo($id('camera_input')); }
 
 function procesarInputArchivo(input) {
   if (!input.files || input.files.length === 0) return;
   procesarBlobArchivo(input.files[0]);
 }
 
-/**
- * [NUEVO] Función unificada que procesa cualquier archivo/blob de imagen o PDF.
- * Es usada por: el clip (📎), la cámara (📷), el paste (Ctrl+V) y el drag&drop.
- *
- * @param {File|Blob} file       — el archivo a procesar
- * @param {boolean}   pulsar     — si true, muestra animación de pulso (paste/drop)
- */
 function procesarBlobArchivo(file, pulsar = false) {
   if (!file) return;
-
-  const btnEnviar = document.getElementById('btn_enviar');
+  const btnEnviar = $id('btn_enviar');
   btnEnviar.disabled = true;
 
-  const preview = document.getElementById('preview_container');
-  document.getElementById('file_name').textContent = '⏳ Procesando...';
+  const preview = $id('preview_container');
+  $id('file_name').textContent = '⏳ Procesando...';
   preview.style.display = 'flex';
 
   mimeTypeActual = file.type || 'application/octet-stream';
-
   const reader = new FileReader();
 
   reader.onload = function(e) {
     archivoActualBase64 = e.target.result.split(',')[1];
-    document.getElementById('file_name').textContent = '✅ ' + (file.name || 'archivo');
+    $id('file_name').textContent = '✅ ' + (file.name || 'archivo');
     btnEnviar.disabled = false;
-
-    // [NUEVO] Pulso visual cuando se pega o se arrastra
     if (pulsar) {
       preview.classList.remove('pulse');
-      // Forzar reflow para reiniciar la animación si se pegan varias seguidas
       void preview.offsetWidth;
       preview.classList.add('pulse');
       setTimeout(() => preview.classList.remove('pulse'), 900);
     }
   };
-
   reader.onerror = function() {
-    document.getElementById('file_name').textContent = '⚠️ Error al leer el archivo';
+    $id('file_name').textContent = '⚠️ Error al leer el archivo';
     btnEnviar.disabled = false;
   };
-
   reader.readAsDataURL(file);
 }
 
 function limpiarArchivo() {
-  document.getElementById('file_input').value = '';
-  document.getElementById('camera_input').value = '';
+  $id('file_input').value = '';
+  $id('camera_input').value = '';
   archivoActualBase64 = null;
   mimeTypeActual      = null;
-  document.getElementById('file_name').textContent = '';
-  document.getElementById('preview_container').style.display = 'none';
+  $id('file_name').textContent = '';
+  $id('preview_container').style.display = 'none';
 }
 
-// ════════════════════════════════════════════════════════════════
-//  [NUEVO] PASTE de imágenes en la caja de texto
-//  Escucha Ctrl+V / Cmd+V sobre #mensaje.
-//  Si lo pegado es una imagen, la procesa y previene el paste normal.
-//  Si es texto, se comporta normalmente.
-// ════════════════════════════════════════════════════════════════
-document.getElementById('mensaje').addEventListener('paste', function(e) {
-  if (!e.clipboardData || !e.clipboardData.items) return;
-
-  const items = e.clipboardData.items;
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    if (item.kind === 'file' && item.type && item.type.startsWith('image/')) {
-      e.preventDefault();   // evitar que el binario se pegue como texto raro
-      const blob = item.getAsFile();
-      if (!blob) return;
-
-      // Generar un nombre legible — los blobs pegados vienen sin nombre
-      const ext = (item.type.split('/')[1] || 'png').replace('+xml', '').replace('jpeg', 'jpg');
-      const ahora = new Date();
-      const hh = String(ahora.getHours()).padStart(2, '0');
-      const mm = String(ahora.getMinutes()).padStart(2, '0');
-      const ss = String(ahora.getSeconds()).padStart(2, '0');
-      const nombre = `captura_pegada_${hh}-${mm}-${ss}.${ext}`;
-
-      // Construir un File con nombre (algunos navegadores devuelven Blob sin name)
-      let archivo;
-      try {
-        archivo = new File([blob], nombre, { type: item.type });
-      } catch (err) {
-        // Fallback para navegadores que no soportan el constructor File
-        archivo = blob;
-        archivo.name = nombre;
+// Paste de imágenes (Ctrl+V) sobre la caja de texto
+function activarPaste() {
+  $id('mensaje').addEventListener('paste', function(e) {
+    if (!e.clipboardData || !e.clipboardData.items) return;
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.kind === 'file' && item.type && item.type.startsWith('image/')) {
+        e.preventDefault();
+        const blob = item.getAsFile();
+        if (!blob) return;
+        const ext = (item.type.split('/')[1] || 'png').replace('+xml', '').replace('jpeg', 'jpg');
+        const ahora = new Date();
+        const hh = String(ahora.getHours()).padStart(2, '0');
+        const mm = String(ahora.getMinutes()).padStart(2, '0');
+        const ss = String(ahora.getSeconds()).padStart(2, '0');
+        const nombre = `captura_pegada_${hh}-${mm}-${ss}.${ext}`;
+        let archivo;
+        try { archivo = new File([blob], nombre, { type: item.type }); }
+        catch (err) { archivo = blob; archivo.name = nombre; }
+        procesarBlobArchivo(archivo, true);
+        return;
       }
-
-      procesarBlobArchivo(archivo, /*pulsar=*/true);
-      return;
-    }
-  }
-});
-
-// ════════════════════════════════════════════════════════════════
-//  [NUEVO] DRAG & DROP de imágenes/PDFs sobre la barra de input
-//  Evita que el navegador abra el archivo al soltarlo fuera del input.
-// ════════════════════════════════════════════════════════════════
-
-// Bloquear el comportamiento por defecto del navegador en TODO el documento
-['dragover', 'drop'].forEach(evt => {
-  window.addEventListener(evt, e => {
-    // Solo prevenimos si NO es sobre el input-area (ese tiene su propio handler)
-    if (!e.target.closest('#input-area')) {
-      e.preventDefault();
     }
   });
-});
+}
 
-(function activarDragAndDrop() {
-  const zona = document.getElementById('input-area');
+// Drag & drop de imágenes/PDF sobre la barra de input
+function activarDragAndDrop() {
+  ['dragover', 'drop'].forEach(evt => {
+    window.addEventListener(evt, e => {
+      if (!e.target.closest('#input-area')) e.preventDefault();
+    });
+  });
+
+  const zona = $id('input-area');
   if (!zona) return;
+  let contador = 0;
 
-  let contador = 0;   // contador para manejar dragenter/dragleave anidados
-
-  zona.addEventListener('dragenter', e => {
-    e.preventDefault();
-    contador++;
-    zona.classList.add('drag-over');
-  });
-
-  zona.addEventListener('dragover', e => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  });
-
-  zona.addEventListener('dragleave', e => {
+  zona.addEventListener('dragenter', e => { e.preventDefault(); contador++; zona.classList.add('drag-over'); });
+  zona.addEventListener('dragover',  e => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+  zona.addEventListener('dragleave', () => {
     contador--;
-    if (contador <= 0) {
-      contador = 0;
-      zona.classList.remove('drag-over');
-    }
+    if (contador <= 0) { contador = 0; zona.classList.remove('drag-over'); }
   });
-
   zona.addEventListener('drop', e => {
     e.preventDefault();
     contador = 0;
     zona.classList.remove('drag-over');
-
     if (!e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
-
     const file = e.dataTransfer.files[0];
-    const esImagen = file.type.startsWith('image/');
-    const esPdf    = file.type === 'application/pdf';
-
-    if (esImagen || esPdf) {
-      procesarBlobArchivo(file, /*pulsar=*/true);
+    if (file.type.startsWith('image/') || file.type === 'application/pdf') {
+      procesarBlobArchivo(file, true);
     } else {
-      // Tipo no soportado — feedback breve
-      const preview = document.getElementById('preview_container');
-      document.getElementById('file_name').textContent = '⚠️ Solo se admiten imágenes o PDF';
-      preview.style.display = 'flex';
+      $id('file_name').textContent = '⚠️ Solo se admiten imágenes o PDF';
+      $id('preview_container').style.display = 'flex';
       setTimeout(() => { if (!archivoActualBase64) limpiarArchivo(); }, 2200);
     }
   });
-})();
-
-// ── [#4] Nueva conversación ─────────────────────────────────────────
-function nuevaConversacion() {
-  if (historialSesion.length === 0) return;
-  if (!confirm('¿Iniciar una nueva conversación? Se perderá el historial actual.')) return;
-
-  historialSesion = [];
-  ultimoPayload   = null;
-  enviando        = false;
-  borrarHistorialGuardado();
-
-  const chat = document.getElementById('chat');
-  chat.innerHTML = '';
-
-  const div = document.createElement('div');
-  div.className = 'msg bot';
-  div.innerHTML = `
-    <div class="msg-label">🤖 Tutor MJD</div>
-    <div class="msg-body">¡Hola! Nueva sesión iniciada. Puedes escribirme tu duda matemática, adjuntar una imagen o pegarla con Ctrl+V. ¡Empecemos!</div>
-    <div class="msg-time">${obtenerHora()}</div>
-  `;
-  chat.appendChild(div);
-
-  document.getElementById('mensaje').focus();
 }
 
-// ── [#10] Exportar conversación ─────────────────────────────────────
-function exportarConversacion() {
-  if (historialSesion.length === 0) {
-    alert('No hay conversación para exportar.');
-    return;
-  }
+// ════════════════════════════════════════════════════════════════
+//  EXPORTAR CONVERSACIÓN (TXT / Markdown / PDF)
+// ════════════════════════════════════════════════════════════════
+function toggleExportMenu(ev) {
+  if (ev) ev.stopPropagation();
+  $id('export-menu').classList.toggle('open');
+}
 
-  let texto = '═══════════════════════════════════════\n';
-  texto    += '   TUTOR MJD — Conversación exportada\n';
-  texto    += '   ' + new Date().toLocaleString('es-CO') + '\n';
-  texto    += '═══════════════════════════════════════\n\n';
-
-  historialSesion.forEach(msg => {
-    const emisor = msg.role === 'user' ? '👤 TÚ' : '🤖 TUTOR MJD';
-    texto += `── ${emisor} ──\n`;
-    texto += msg.content + '\n\n';
-  });
-
-  texto += '═══════════════════════════════════════\n';
-  texto += 'Exportado desde Tutor MJD — Universidad Popular del Cesar\n';
-
-  const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+function descargarArchivo(contenido, nombre, mime) {
+  const blob = new Blob([contenido], { type: mime });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = `TutorMJD_${new Date().toISOString().slice(0,10)}.txt`;
+  a.download = nombre;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
-// ── [4.4] Persistencia en localStorage ───────────────────────────────
-function guardarHistorial() {
-  try {
-    const recortado = historialSesion.slice(-MAX_HISTORIAL);
-    localStorage.setItem(STORAGE_KEY_HISTORIAL, JSON.stringify(recortado));
-  } catch (e) {
-    console.warn('No se pudo guardar el historial:', e);
+function exportarConversacion(formato) {
+  $id('export-menu').classList.remove('open');
+  const c = chatActual();
+  if (!c || c.msgs.length === 0) {
+    pedirConfirmacion('No hay conversación para exportar todavía. ¡Escríbele algo a MJA primero!', null);
+    return;
   }
-}
+  const fecha = new Date().toLocaleString('es-CO');
+  const dia   = new Date().toISOString().slice(0, 10);
 
-function cargarHistorial() {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY_HISTORIAL);
-    if (!data) return false;
-    const parsed = JSON.parse(data);
-    if (!Array.isArray(parsed) || parsed.length === 0) return false;
-    historialSesion = parsed;
-    return true;
-  } catch (e) {
-    console.warn('No se pudo cargar el historial:', e);
-    return false;
-  }
-}
-
-function borrarHistorialGuardado() {
-  try { localStorage.removeItem(STORAGE_KEY_HISTORIAL); } catch(e) {}
-}
-
-function restaurarMensajesEnDOM() {
-  const chat = document.getElementById('chat');
-  chat.innerHTML = '';
-
-  const aviso = document.createElement('div');
-  aviso.className = 'msg bot';
-  aviso.innerHTML = `
-    <div class="msg-label">🤖 Tutor MJD</div>
-    <div class="msg-body">Retomamos donde quedamos. Continuemos con tu duda anterior o escríbeme una nueva.</div>
-    <div class="msg-time">${obtenerHora()}</div>
-  `;
-  chat.appendChild(aviso);
-
-  const divsParaMathJax = [];
-  historialSesion.forEach(msg => {
-    if (msg.role === 'user') {
-      const htmlTexto = marked.parse(msg.content || '');
-      agregarMensaje(htmlTexto, 'user', { skipHistorial: true });
-    } else {
-      const htmlParseado = procesarTextoSeguro(msg.content || '');
-      const d = agregarMensaje(htmlParseado, 'bot', { skipHistorial: true });
-      divsParaMathJax.push(d);
-    }
-  });
-
-  if (window.MathJax && divsParaMathJax.length) {
-    MathJax.typesetPromise(divsParaMathJax).then(() => {
-      divsParaMathJax.forEach(aplicarAnimacionPasos);
+  if (formato === 'md') {
+    let md = `# Tutor MJA — ${escapeHTML(c.titulo)}\n\n_Exportado: ${fecha}_\n\n---\n\n`;
+    c.msgs.forEach(msg => {
+      md += (msg.role === 'user' ? '### 👤 Tú\n\n' : '### 🤖 Tutor MJA\n\n');
+      md += msg.content + '\n\n---\n\n';
     });
+    md += '_Exportado desde Tutor MJA — Master College_\n';
+    descargarArchivo(md, `TutorMJA_${dia}.md`, 'text/markdown;charset=utf-8');
+    return;
   }
+
+  let texto = '═══════════════════════════════════════\n';
+  texto    += '   TUTOR MJA — Conversación exportada\n';
+  texto    += '   ' + fecha + '\n';
+  texto    += '═══════════════════════════════════════\n\n';
+  c.msgs.forEach(msg => {
+    texto += `── ${msg.role === 'user' ? '👤 TÚ' : '🤖 TUTOR MJA'} ──\n`;
+    texto += msg.content + '\n\n';
+  });
+  texto += '═══════════════════════════════════════\n';
+  texto += 'Exportado desde Tutor MJA — Master College\n';
+  descargarArchivo(texto, `TutorMJA_${dia}.txt`, 'text/plain;charset=utf-8');
 }
 
-// ── [4.2] Teclado matemático ─────────────────────────────────────────
+function exportarPDF() {
+  $id('export-menu').classList.remove('open');
+  window.print();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TECLADO MATEMÁTICO + TEXTAREA
+// ════════════════════════════════════════════════════════════════
 function toggleTecladoMatematico() {
-  const kbd = document.getElementById('math-keyboard');
-  const btn = document.getElementById('btn_math_kbd');
+  const kbd = $id('math-keyboard');
+  const btn = $id('btn_math_kbd');
   const abierto = kbd.classList.toggle('open');
   btn.classList.toggle('active', abierto);
-  if (abierto) document.getElementById('mensaje').focus();
+  if (abierto) $id('mensaje').focus();
 }
 
 function insertarSimbolo(simbolo) {
-  const input = document.getElementById('mensaje');
+  const input = $id('mensaje');
   const inicio = input.selectionStart ?? input.value.length;
   const fin    = input.selectionEnd   ?? input.value.length;
-  const antes  = input.value.substring(0, inicio);
-  const despues = input.value.substring(fin);
-  input.value = antes + simbolo + despues;
+  input.value = input.value.substring(0, inicio) + simbolo + input.value.substring(fin);
   const nuevaPos = inicio + simbolo.length;
   input.focus();
   input.setSelectionRange(nuevaPos, nuevaPos);
+  autoAjustarTextarea();
 }
 
-// ── Envío de mensaje (STREAMING) ─────────────────────────────────────
+function autoAjustarTextarea() {
+  const ta = $id('mensaje');
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 130) + 'px';
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ENVÍO DE MENSAJES (STREAMING con detener/regenerar)
+// ════════════════════════════════════════════════════════════════
+let abortadoManual = false;
+
+function setBotonEnviar(modo) {
+  const btn = $id('btn_enviar');
+  if (modo === 'detener') {
+    btn.classList.add('detener');
+    btn.textContent = '⏹';
+    btn.title = 'Detener generación';
+    btn.setAttribute('aria-label', 'Detener generación');
+    btn.disabled = false;
+  } else {
+    btn.classList.remove('detener');
+    btn.textContent = '➤';
+    btn.title = 'Enviar';
+    btn.setAttribute('aria-label', 'Enviar mensaje');
+  }
+}
+
+function accionEnviar() {
+  if (enviando) {
+    abortadoManual = true;
+    if (streamController) streamController.abort();
+    return;
+  }
+  enviarMensaje();
+}
+
 async function enviarMensaje() {
   if (enviando) return;
+  const c = chatActual();
+  if (!c) return;
 
-  const input = document.getElementById('mensaje');
+  const input = $id('mensaje');
   const txt   = input.value.trim();
-
   if (!txt && !archivoActualBase64) return;
 
   enviando = true;
+  quitarRegenerarPrevios();
 
-  let vistaPrevia = txt ? marked.parse(txt) : '';
+  let vistaPrevia = txt ? markdownSeguro(txt) : '';
   if (archivoActualBase64) {
-    const nombreArchivo = document.getElementById('file_name').textContent.replace('✅ ', '');
+    const nombreArchivo = $id('file_name').textContent.replace('✅ ', '');
     vistaPrevia += mimeTypeActual.startsWith('image/')
       ? `<img src="data:${mimeTypeActual};base64,${archivoActualBase64}" alt="Imagen adjunta">`
-      : `<p><i>📄 ${nombreArchivo}</i></p>`;
+      : `<p><i>📄 ${escapeHTML(nombreArchivo)}</i></p>`;
   }
 
   agregarMensaje(vistaPrevia, 'user');
   input.value = '';
-
-  const historialRecortado = historialSesion.slice(-MAX_HISTORIAL);
+  autoAjustarTextarea();
 
   const payload = {
     msg:       txt,
-    historial: historialRecortado,
+    historial: historialParaAPI(),
     file_b64:  archivoActualBase64,
     mime_type: mimeTypeActual
   };
-
   ultimoPayload = { ...payload };
 
-  historialSesion.push({
-    role:    'user',
-    content: txt || '[El estudiante envió un archivo para análisis]'
-  });
-  guardarHistorial();
+  c.msgs.push({ role: 'user', content: txt || '[El estudiante envió un archivo para análisis]' });
+  if (c.titulo === 'Nueva conversación' && txt) c.titulo = tituloDesde(txt);
+  c.t = Date.now();
+  persistirChats();
+  renderSidebar();
+
+  registrarActividadDiaria();
+  addXP(5);
 
   limpiarArchivo();
-  document.getElementById('btn_enviar').disabled = true;
+  $id('btn_enviar').disabled = true;
 
   await ejecutarStreaming(payload);
 }
 
 async function reintentarEnvio() {
   if (!ultimoPayload || enviando) return;
-
-  const chat = document.getElementById('chat');
+  const chat = $id('chat');
   const msgs = chat.querySelectorAll('.msg.bot');
   const lastBot = msgs[msgs.length - 1];
   if (lastBot && lastBot.querySelector('.btn-retry')) lastBot.remove();
-
   enviando = true;
-  document.getElementById('btn_enviar').disabled = true;
+  $id('btn_enviar').disabled = true;
   await ejecutarStreaming(ultimoPayload);
+}
+
+function regenerarRespuesta(msgDiv) {
+  if (!ultimoPayload || enviando) return;
+  const c = chatActual();
+  if (!c) return;
+  // Quitar la última respuesta del modelo (DOM + historial)
+  if (c.msgs.length && c.msgs[c.msgs.length - 1].role === 'model') {
+    c.msgs.pop();
+    persistirChats();
+  }
+  if (msgDiv) msgDiv.remove();
+  enviando = true;
+  $id('btn_enviar').disabled = true;
+  ejecutarStreaming(ultimoPayload);
 }
 
 async function ejecutarStreaming(payload) {
   let indicador = agregarIndicadorEscritura();
   let msgDiv    = null;
   let msgBody   = null;
-
   let textoAcumulado = '';
   let ultimaRenderizacion = 0;
 
-  const controller = new AbortController();
-  const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  abortadoManual = false;
+  streamController = new AbortController();
+  const controller = streamController;
+
+  // Timeout por inactividad: se reinicia con cada chunk recibido.
+  let idleTimer = setTimeout(() => controller.abort(), STREAM_IDLE_MS);
+  const reiniciarIdle = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => controller.abort(), STREAM_IDLE_MS);
+  };
+
+  setBotonEnviar('detener');
 
   const asegurarBurbuja = () => {
     if (msgDiv) return;
@@ -2228,14 +3485,13 @@ async function ejecutarStreaming(payload) {
     msgBody = msgDiv.querySelector('.msg-body');
   };
 
-  // Durante el stream ocultamos lo que venga desde "[[" (las etiquetas de
-  // gráfica que el modelo escribe al final); se procesan al terminar.
+  // Ocultar lo que venga desde "[[" durante el stream (etiquetas del final)
   const renderParcial = () => {
     if (!msgBody) return;
     const corte = textoAcumulado.indexOf('[[');
     const visible = corte >= 0 ? textoAcumulado.slice(0, corte) : textoAcumulado;
-    msgBody.innerHTML = marked.parse(visible);
-    const chat = document.getElementById('chat');
+    msgBody.innerHTML = markdownSeguro(visible);
+    const chat = $id('chat');
     chat.scrollTop = chat.scrollHeight;
   };
 
@@ -2248,13 +3504,42 @@ async function ejecutarStreaming(payload) {
     } else {
       agregarMensaje(
         mensaje + '<br><button class="btn-retry" onclick="reintentarEnvio()">🔄 Reintentar</button>',
-        'bot',
-        { esError: true }
+        'bot', { esError: true }
       );
     }
   };
 
-  // ── Construir la petición para Gemini (lo que hacía _preparar_contents) ──
+  // Finaliza y pinta la respuesta (también se usa al detener manualmente).
+  const finalizarRespuesta = async (notaExtra) => {
+    asegurarBurbuja();
+    const limpio = postProcesar(textoAcumulado);
+    const { texto, grafica, funcion, quiz } = extraerTags(limpio);
+
+    const c = chatActual();
+    if (c) {
+      const tags = (grafica || funcion || quiz) ? { grafica, funcion, quiz } : undefined;
+      c.msgs.push({ role: 'model', content: texto, tags });
+      c.t = Date.now();
+      persistirChats();
+    }
+
+    msgBody.innerHTML = procesarTextoSeguro(texto) +
+      (notaExtra ? `<p style="opacity:.6;font-size:.85em;margin-top:8px">${notaExtra}</p>` : '');
+    msgDiv.classList.remove('streaming');
+
+    if (window.MathJax && MathJax.typesetPromise) {
+      try { await MathJax.typesetPromise([msgDiv]); }
+      catch (e) { console.warn('MathJax error:', e); }
+    }
+    aplicarAnimacionPasos(msgDiv);
+    asegurarFooterEnMensaje(msgDiv, /*conRegenerar=*/true);
+
+    if (grafica) mostrarGraficaEnChat(grafica, msgDiv);
+    if (funcion) mostrarFuncionEnChat(funcion, msgDiv);
+    if (quiz)    renderQuiz(quiz, msgDiv, false);
+  };
+
+  // ── Construir la petición para Gemini ──
   const contents = [];
   (payload.historial || []).forEach(m => {
     contents.push({
@@ -2262,7 +3547,6 @@ async function ejecutarStreaming(payload) {
       parts: [{ text: m.content || '' }]
     });
   });
-
   const partesActuales = [];
   if (payload.file_b64 && payload.mime_type) {
     partesActuales.push({ inlineData: { mimeType: payload.mime_type, data: payload.file_b64 } });
@@ -2272,15 +3556,16 @@ async function ejecutarStreaming(payload) {
   });
   contents.push({ role: 'user', parts: partesActuales });
 
+  const sufijoModo = (MODOS[modoActual] && MODOS[modoActual].prompt) ? '\n\n' + MODOS[modoActual].prompt : '';
   const body = {
-    systemInstruction: { parts: [{ text: PROMPT_BASE }] },
+    systemInstruction: { parts: [{ text: PROMPT_BASE + sufijoModo }] },
     contents,
     generationConfig: { temperature: GEMINI.temperature }
   };
 
   try {
     if (!GEMINI.proxyURL || GEMINI.proxyURL.includes('TU-WORKER') || GEMINI.proxyURL.includes('TU-SUBDOMINIO')) {
-      clearTimeout(timeoutId);
+      clearTimeout(idleTimer);
       mostrarError('⚠️ Falta poner la URL de tu proxy. Abre <code>index.html</code> y escribe la URL de tu Worker de Cloudflare en <b>GEMINI.proxyURL</b>.');
       return;
     }
@@ -2294,7 +3579,7 @@ async function ejecutarStreaming(payload) {
     if (!res.ok) {
       let detalle = '';
       try { const ej = await res.json(); detalle = ej?.error?.message || ''; } catch (e) {}
-      clearTimeout(timeoutId);
+      clearTimeout(idleTimer);
       console.error('Gemini HTTP', res.status, detalle);
       mostrarError(mensajeErrorHTTP(res.status, detalle));
       return;
@@ -2307,6 +3592,7 @@ async function ejecutarStreaming(payload) {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
+      reiniciarIdle();
       sseBuffer += decoder.decode(value, { stream: true });
 
       // Gemini separa eventos SSE con \r\n\r\n (no \n\n). Toleramos ambos.
@@ -2335,70 +3621,136 @@ async function ejecutarStreaming(payload) {
       }
     }
 
-    clearTimeout(timeoutId);
+    clearTimeout(idleTimer);
 
     if (!textoAcumulado.trim()) {
       mostrarError('⚠️ El modelo no devolvió texto (posible bloqueo de seguridad o límite). Intenta reformular tu pregunta.');
       return;
     }
-
-    asegurarBurbuja();
-
-    // Post-procesado idéntico al backend + extracción de gráficas.
-    const limpio = postProcesar(textoAcumulado);
-    const { texto, grafica, funcion } = extraerTags(limpio);
-
-    historialSesion.push({ role: 'model', content: texto });
-    guardarHistorial();
-
-    msgBody.innerHTML = procesarTextoSeguro(texto);
-    msgDiv.classList.remove('streaming');
-
-    if (window.MathJax) {
-      try {
-        await MathJax.typesetPromise([msgDiv]);
-      } catch (e) {
-        console.warn('MathJax error:', e);
-      }
-    }
-    aplicarAnimacionPasos(msgDiv);
-    asegurarFooterEnMensaje(msgDiv);
-
-    if (grafica) mostrarGraficaEnChat(grafica);
-    if (funcion) mostrarFuncionEnChat(funcion);
+    await finalizarRespuesta(null);
 
   } catch (err) {
-    clearTimeout(timeoutId);
-    const esTimeout = err.name === 'AbortError';
-    mostrarError(
-      esTimeout
-        ? '⚠️ La respuesta tardó demasiado. Revisa tu conexión o inténtalo de nuevo.'
-        : '⚠️ No se pudo conectar con el proxy. Revisa que GEMINI.proxyURL sea correcta, que el Worker esté publicado en Cloudflare y que tu dominio de GitHub esté en ALLOWED_ORIGINS del Worker. Detalles en la consola (F12).'
-    );
-    console.error('Error en streaming Gemini:', err);
+    clearTimeout(idleTimer);
+    const esAbort = err.name === 'AbortError';
+
+    if (esAbort && abortadoManual && textoAcumulado.trim()) {
+      // El estudiante detuvo la generación: conservamos lo recibido.
+      await finalizarRespuesta('⏹️ Generación detenida por ti.');
+    } else if (esAbort && abortadoManual) {
+      if (indicador) { indicador.remove(); indicador = null; }
+      if (msgDiv) msgDiv.remove();
+    } else {
+      mostrarError(
+        esAbort
+          ? '⚠️ La respuesta tardó demasiado. Revisa tu conexión o inténtalo de nuevo.'
+          : '⚠️ No se pudo conectar con el proxy. Revisa que GEMINI.proxyURL sea correcta, que el Worker esté publicado en Cloudflare y que tu dominio de GitHub esté en ALLOWED_ORIGINS del Worker. Detalles en la consola (F12).'
+      );
+      console.error('Error en streaming Gemini:', err);
+    }
   } finally {
-    document.getElementById('btn_enviar').disabled = false;
+    streamController = null;
+    abortadoManual = false;
+    setBotonEnviar('enviar');
+    $id('btn_enviar').disabled = false;
     enviando = false;
   }
 }
 
-function asegurarFooterEnMensaje(msgDiv) {
-  if (msgDiv.querySelector('.msg-footer')) return;
-  const hora = obtenerHora();
-  const footer = document.createElement('div');
-  footer.className = 'msg-footer';
-  footer.innerHTML = `
-    <span class="msg-time">${hora}</span>
-    <button class="btn-copy" onclick="copiarMensaje(this)" aria-label="Copiar respuesta">📋 Copiar</button>
-  `;
-  msgDiv.appendChild(footer);
+// ════════════════════════════════════════════════════════════════
+//  EVENTOS GLOBALES E INICIALIZACIÓN
+// ════════════════════════════════════════════════════════════════
+function activarEventosGlobales() {
+  const input = $id('mensaje');
+
+  // Enter envía, Shift+Enter hace salto de línea
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!enviando) enviarMensaje();
+    }
+  });
+  input.addEventListener('input', autoAjustarTextarea);
+
+  // Cerrar menú de exportación al hacer clic fuera
+  document.addEventListener('click', e => {
+    const menu = $id('export-menu');
+    if (menu.classList.contains('open') && !e.target.closest('.header-actions')) {
+      menu.classList.remove('open');
+    }
+  });
+
+  // Atajos de teclado
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      cerrarHerramientas();
+      cerrarConfirmacion();
+      $id('export-menu').classList.remove('open');
+      cerrarSidebar();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      nuevaConversacion();
+    }
+  });
+
+  // Cerrar modales al hacer clic en el fondo
+  ['tools-modal', 'confirm-modal'].forEach(id => {
+    $id(id).addEventListener('click', e => {
+      if (e.target === $id(id)) $id(id).classList.remove('open');
+    });
+  });
+
+  // Modal de confirmación
+  $id('confirm-si').onclick = () => {
+    const cb = confirmCallback;
+    cerrarConfirmacion();
+    if (cb) cb();
+  };
+  $id('confirm-no').onclick = cerrarConfirmacion;
+
+  // Chips del hero
+  document.querySelectorAll('.hero-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $id('mensaje').value = btn.dataset.prompt || '';
+      autoAjustarTextarea();
+      enviarMensaje();
+    });
+  });
+
+  // Estado de conexión
+  window.addEventListener('offline', () => $id('offline-banner').classList.add('show'));
+  window.addEventListener('online',  () => $id('offline-banner').classList.remove('show'));
+  if (navigator.onLine === false) $id('offline-banner').classList.add('show');
 }
 
-// ── Enter para enviar ─────────────────────────────────────────────────
-document.getElementById('mensaje').addEventListener('keypress', e => {
-  if (e.key === 'Enter' && !enviando) {
-    enviarMensaje();
-  }
+window.addEventListener('load', () => {
+  heroEl = $id('hero');
+
+  setTimeout(() => { $id('splash').classList.add('hide'); }, 650);
+
+  // Preferencias
+  aplicarTema(document.documentElement.getAttribute('data-theme') || 'dark');
+  cargarFuente();
+  cargarModo();
+  cargarStats();
+
+  // Conversaciones
+  cargarChats();
+  renderSidebar();
+  renderChatActual();
+
+  // UI
+  crearParticulas();
+  construirCalculadora();
+  inicializarVoz();
+  activarPaste();
+  activarDragAndDrop();
+  activarEventosGlobales();
+  autoAjustarTextarea();
+
+  // Algunos navegadores cargan las voces de forma asíncrona
+  if ('speechSynthesis' in window) speechSynthesis.getVoices();
 });
 </script>
 </body>
