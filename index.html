@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="Tutor MJA — Tu tutor de matemáticas con inteligencia artificial">
 <meta name="theme-color" content="#060b16">
 <title>Tutor MJA</title>
@@ -125,12 +125,19 @@ window.MathJax = {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Móvil: sin zoom por doble toque ni destello azul al tocar botones */
+* { -webkit-tap-highlight-color: transparent; }
+button, input, textarea, select, .chat-item, .qz-op, .hero-chip, .mode-chip {
+  touch-action: manipulation;
+}
+
 html, body { height: 100%; }
 
 body {
   background: var(--bg-deep);
   color: var(--text-main);
   font-family: var(--font-main);
+  height: 100vh;
   height: 100dvh;
   overflow: hidden;
   position: relative;
@@ -258,11 +265,35 @@ header, #sidebar, #input-area, #preview_container, #math-keyboard,
 }
 #offline-banner.show { display: flex; }
 
+/* ── Toast (aviso flotante breve) ── */
+#toast {
+  position: fixed;
+  bottom: 92px;
+  left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--accent-glow);
+  box-shadow: var(--shadow);
+  border-radius: 22px;
+  padding: 10px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  z-index: 6000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 86vw;
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* ════════════════════════════════════════════════════════════════
    ── LAYOUT PRINCIPAL: sidebar + columna de chat ──
    ──────────────────────────────────────────────────────────────── */
 .app-frame {
   display: flex;
+  height: 100vh;
   height: 100dvh;
   width: 100%;
   max-width: var(--max-app);
@@ -396,6 +427,10 @@ header, #sidebar, #input-area, #preview_container, #math-keyboard,
   padding: 14px 10px;
   opacity: 0.8;
 }
+/* En pantallas táctiles no existe "hover": el botón de borrar siempre visible */
+@media (hover: none) {
+  .chat-item .ci-del { opacity: 0.85; }
+}
 
 /* ── Tarjeta de progreso (XP / racha) ── */
 #stats-card {
@@ -480,6 +515,7 @@ header, #sidebar, #input-area, #preview_container, #math-keyboard,
   min-width: 0;
   display: flex;
   flex-direction: column;
+  height: 100vh;
   height: 100dvh;
 }
 
@@ -1439,7 +1475,9 @@ header {
 @media (max-width: 560px) {
   #input-area { padding: 9px 9px 10px; gap: 6px; }
   .btn-action { width: 40px; height: 40px; font-size: 16px; }
-  #mensaje { padding: 10px 14px; font-size: 14px; }
+  /* 16px mínimo: evita que iPhone/Android hagan zoom al enfocar el campo */
+  #mensaje { padding: 10px 14px; font-size: 16px; }
+  .tool-input, #calc-display { font-size: 16px; }
   .header-text p { display: none; }
   .escudo-img { display: none; }
   .hero-chips { grid-template-columns: 1fr 1fr; }
@@ -1503,6 +1541,7 @@ header {
 <div class="particles" aria-hidden="true" id="particles"></div>
 
 <div id="offline-banner" role="status">📡 Sin conexión a internet — revisa tu red</div>
+<div id="toast" role="status" aria-live="polite"></div>
 <div id="scrim" onclick="cerrarSidebar()"></div>
 
 <div class="app-frame">
@@ -1716,7 +1755,7 @@ header {
           aria-label="Dictar por voz" title="Dictar tu pregunta por voz">🎤</button>
 
   <textarea id="mensaje" rows="1"
-            placeholder="Escribe tu duda aquí… (Enter envía, Shift+Enter salto de línea)"
+            placeholder="Escribe tu duda aquí…"
             autocomplete="off"
             aria-label="Escribe tu pregunta de matemáticas"></textarea>
 
@@ -2068,6 +2107,16 @@ function svgADataUri(svg) {
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
+let toastTimer = null;
+function mostrarToast(msg) {
+  const t = $id('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
 // ════════════════════════════════════════════════════════════════
 //  PIPELINE MARKDOWN + LATEX (a prueba de HTML inyectado)
 //  1. Se protegen los bloques $...$ / $$...$$
@@ -2270,9 +2319,10 @@ function tituloDesde(texto) {
 
 function nuevaConversacion() {
   const actual = chatActual();
-  // Si la conversación actual ya está vacía, solo enfocamos el input.
+  // Si la conversación actual ya está vacía, avisamos y enfocamos el input.
   if (actual && actual.msgs.length === 0) {
     cerrarSidebar();
+    mostrarToast('✨ Ya estás en una conversación nueva. ¡Escribe tu duda!');
     $id('mensaje').focus();
     return;
   }
@@ -2285,6 +2335,7 @@ function nuevaConversacion() {
   renderSidebar();
   renderChatActual();
   cerrarSidebar();
+  mostrarToast('🆕 Conversación nueva creada');
   $id('mensaje').focus();
 }
 
@@ -2404,17 +2455,19 @@ function renderChatActual() {
 
   const divsParaMathJax = [];
   c.msgs.forEach(msg => {
-    if (msg.role === 'user') {
-      agregarMensaje(markdownSeguro(msg.content || ''), 'user', { skipScroll: true });
-    } else {
-      const d = agregarMensaje(procesarTextoSeguro(msg.content || ''), 'bot', { skipScroll: true });
-      divsParaMathJax.push(d);
-      if (msg.tags) {
-        if (msg.tags.grafica) mostrarGraficaEnChat(msg.tags.grafica, d);
-        if (msg.tags.funcion) mostrarFuncionEnChat(msg.tags.funcion, d);
-        if (msg.tags.quiz)    renderQuiz(msg.tags.quiz, d, /*restaurado=*/true);
+    try {
+      if (msg.role === 'user') {
+        agregarMensaje(markdownSeguro(msg.content || ''), 'user', { skipScroll: true });
+      } else {
+        const d = agregarMensaje(procesarTextoSeguro(msg.content || ''), 'bot', { skipScroll: true });
+        divsParaMathJax.push(d);
+        if (msg.tags) {
+          if (msg.tags.grafica) mostrarGraficaEnChat(msg.tags.grafica, d);
+          if (msg.tags.funcion) mostrarFuncionEnChat(msg.tags.funcion, d);
+          if (msg.tags.quiz)    renderQuiz(msg.tags.quiz, d, /*restaurado=*/true);
+        }
       }
-    }
+    } catch (e) { console.warn('Mensaje no restaurado:', e); }
   });
 
   if (window.MathJax && MathJax.typesetPromise && divsParaMathJax.length) {
@@ -3349,10 +3402,18 @@ function insertarSimbolo(simbolo) {
   autoAjustarTextarea();
 }
 
+// En pantallas angostas el placeholder largo no cabe: usar uno corto
+function ajustarPlaceholderMovil() {
+  const ta = $id('mensaje');
+  if (!ta) return;
+  ta.placeholder = (window.innerWidth <= 560) ? 'Tu duda…' : 'Escribe tu duda aquí…';
+}
+
 function autoAjustarTextarea() {
   const ta = $id('mensaje');
   ta.style.height = 'auto';
-  ta.style.height = Math.min(ta.scrollHeight, 130) + 'px';
+  // Solo crecer cuando hay texto; vacío vuelve a una sola línea
+  ta.style.height = ta.value ? Math.min(ta.scrollHeight, 130) + 'px' : '';
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3735,19 +3796,26 @@ window.addEventListener('load', () => {
   cargarModo();
   cargarStats();
 
-  // Conversaciones
-  cargarChats();
-  renderSidebar();
-  renderChatActual();
+  // Conversaciones (si los datos guardados fallan, se arranca de cero)
+  try {
+    cargarChats();
+    renderSidebar();
+    renderChatActual();
+  } catch (e) {
+    console.error('Init conversaciones:', e);
+    try {
+      const c = { id: uid(), titulo: 'Nueva conversación', t: Date.now(), msgs: [] };
+      chats = [c]; chatActualId = c.id;
+      renderSidebar(); renderChatActual();
+    } catch (e2) {}
+  }
 
-  // UI
-  crearParticulas();
-  construirCalculadora();
-  inicializarVoz();
-  activarPaste();
-  activarDragAndDrop();
-  activarEventosGlobales();
-  autoAjustarTextarea();
+  // UI: cada paso protegido — si uno falla, los demás siguen funcionando
+  [crearParticulas, construirCalculadora, inicializarVoz, activarPaste,
+   activarDragAndDrop, activarEventosGlobales, ajustarPlaceholderMovil, autoAjustarTextarea]
+    .forEach(fn => { try { fn(); } catch (e) { console.error('Init UI:', e); } });
+
+  window.addEventListener('resize', ajustarPlaceholderMovil);
 
   // Algunos navegadores cargan las voces de forma asíncrona
   if ('speechSynthesis' in window) speechSynthesis.getVoices();
@@ -3755,4 +3823,3 @@ window.addEventListener('load', () => {
 </script>
 </body>
 </html>
-
